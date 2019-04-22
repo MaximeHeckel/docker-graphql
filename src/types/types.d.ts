@@ -5,9 +5,27 @@ export type Maybe<T> = T | null;
 // ====================================================
 
 export interface Query {
+  containers: Container[];
+
+  container: Container;
+
   services: Service[];
 
   service: Service;
+}
+
+export interface Container {
+  Id: string;
+
+  Command: string;
+
+  Image: string;
+
+  Names: string[];
+
+  State: string;
+
+  Status: string;
 }
 
 export interface Service {
@@ -18,6 +36,8 @@ export interface Service {
   UpdatedAt: string;
 
   Spec: ServiceSpec;
+
+  containers: Container[];
 }
 
 export interface ServiceSpec {
@@ -38,6 +58,9 @@ export interface ServiceReplicated {
 // Arguments
 // ====================================================
 
+export interface ContainerQueryArgs {
+  id: string;
+}
 export interface ServiceQueryArgs {
   id: string;
 }
@@ -97,9 +120,27 @@ export type DirectiveResolverFn<TResult, TArgs = {}, TContext = {}> = (
 
 export namespace QueryResolvers {
   export interface Resolvers<TContext = MyContext, TypeParent = {}> {
+    containers?: ContainersResolver<Container[], TypeParent, TContext>;
+
+    container?: ContainerResolver<Container, TypeParent, TContext>;
+
     services?: ServicesResolver<Service[], TypeParent, TContext>;
 
     service?: ServiceResolver<Service, TypeParent, TContext>;
+  }
+
+  export type ContainersResolver<
+    R = Container[],
+    Parent = {},
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ContainerResolver<
+    R = Container,
+    Parent = {},
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext, ContainerArgs>;
+  export interface ContainerArgs {
+    id: string;
   }
 
   export type ServicesResolver<
@@ -117,6 +158,53 @@ export namespace QueryResolvers {
   }
 }
 
+export namespace ContainerResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = Container> {
+    Id?: IdResolver<string, TypeParent, TContext>;
+
+    Command?: CommandResolver<string, TypeParent, TContext>;
+
+    Image?: ImageResolver<string, TypeParent, TContext>;
+
+    Names?: NamesResolver<string[], TypeParent, TContext>;
+
+    State?: StateResolver<string, TypeParent, TContext>;
+
+    Status?: StatusResolver<string, TypeParent, TContext>;
+  }
+
+  export type IdResolver<
+    R = string,
+    Parent = Container,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CommandResolver<
+    R = string,
+    Parent = Container,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ImageResolver<
+    R = string,
+    Parent = Container,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type NamesResolver<
+    R = string[],
+    Parent = Container,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type StateResolver<
+    R = string,
+    Parent = Container,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type StatusResolver<
+    R = string,
+    Parent = Container,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
 export namespace ServiceResolvers {
   export interface Resolvers<TContext = MyContext, TypeParent = Service> {
     ID?: IdResolver<string, TypeParent, TContext>;
@@ -126,6 +214,8 @@ export namespace ServiceResolvers {
     UpdatedAt?: UpdatedAtResolver<string, TypeParent, TContext>;
 
     Spec?: SpecResolver<ServiceSpec, TypeParent, TContext>;
+
+    containers?: ContainersResolver<Container[], TypeParent, TContext>;
   }
 
   export type IdResolver<
@@ -145,6 +235,11 @@ export namespace ServiceResolvers {
   > = Resolver<R, Parent, TContext>;
   export type SpecResolver<
     R = ServiceSpec,
+    Parent = Service,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ContainersResolver<
+    R = Container[],
     Parent = Service,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
@@ -235,6 +330,7 @@ export interface DeprecatedDirectiveArgs {
 
 export type IResolvers<TContext = MyContext> = {
   Query?: QueryResolvers.Resolvers<TContext>;
+  Container?: ContainerResolvers.Resolvers<TContext>;
   Service?: ServiceResolvers.Resolvers<TContext>;
   ServiceSpec?: ServiceSpecResolvers.Resolvers<TContext>;
   ServiceMode?: ServiceModeResolvers.Resolvers<TContext>;

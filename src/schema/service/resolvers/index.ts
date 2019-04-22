@@ -1,15 +1,19 @@
 import request from "superagent";
 import Service from "./Service";
 
+import { QueryResolvers } from "../../../types/types";
+
 const baseURL = "http+unix://%2Fvar%2Frun%2Fdocker.sock";
 
-const Query = {
-  services: async (parent, args) => {
-    return request.get(`${baseURL}/services`).then(res => res.body);
+const Query: QueryResolvers.Resolvers = {
+  services: async (_parent, _args) => {
+    const { body } = await request.get(`${baseURL}/services`);
+    return body;
   },
-  service: async (parent, args) => {
+  service: async (_parent, args) => {
     const { id } = args;
-    return request.get(`${baseURL}/services/${id}`).then(res => res.body);
+    const { body } = await request.get(`${baseURL}/services/${id}`);
+    return body;
   }
 };
 
