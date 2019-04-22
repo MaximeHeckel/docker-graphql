@@ -10,6 +10,7 @@ const typeDefs = gql`
     CreatedAt: String!
     UpdatedAt: String!
     Spec: ServiceSpec!
+    containers: [Container!]!
   }
   type ServiceSpec {
     Name: String!

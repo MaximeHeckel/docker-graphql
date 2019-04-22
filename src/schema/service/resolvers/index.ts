@@ -1,4 +1,5 @@
 import request from "superagent";
+import Service from "./Service";
 
 const baseURL = "http+unix://%2Fvar%2Frun%2Fdocker.sock";
 
@@ -12,4 +13,4 @@ const Query = {
   }
 };
 
-export default { Query };
+export default { Query, Service };
