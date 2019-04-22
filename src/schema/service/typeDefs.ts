@@ -5,28 +5,21 @@ const typeDefs = gql`
     services: [Service!]!
     service(id: ID!): Service!
   }
-
-  type ServiceReplicated {
-    Replicas: Int!
-  }
-
-  type ServiceMode {
-    Replicated: ServiceReplicated
-  }
-
-  scalar JSON
-
-  type ServiceSpec {
-    Labels: JSON
-    Name: String!
-    Mode: ServiceMode
-  }
-
   type Service {
     ID: ID!
     CreatedAt: String!
     UpdatedAt: String!
     Spec: ServiceSpec!
+  }
+  type ServiceSpec {
+    Name: String!
+    Mode: ServiceMode
+  }
+  type ServiceMode {
+    Replicated: ServiceReplicated
+  }
+  type ServiceReplicated {
+    Replicas: Int!
   }
 `;
 
