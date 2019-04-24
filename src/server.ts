@@ -1,7 +1,6 @@
 import { ApolloServer } from "apollo-server";
-import { port } from "./constants";
 
-const serve = ({ schema, context }) => {
+const serve = ({ port, schema, context }) => {
   const server = new ApolloServer({
     schema,
     context

@@ -32,7 +32,3 @@ const typeDefs = gql`
 `;
 
 export default typeDefs;
-
-// tasks: [Task!]!
-// secrets: [Secret!]!
-// containers: [Container!]!
