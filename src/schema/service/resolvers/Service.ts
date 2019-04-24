@@ -2,7 +2,7 @@ import request from "superagent";
 
 import { ServiceResolvers } from "../../../types/types";
 
-const Service = {
+const Service: ServiceResolvers.Resolvers = {
   containers: async (parent, _args, { baseURL }) => {
     const { ID } = parent;
     const filters = {

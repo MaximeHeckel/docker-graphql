@@ -38,6 +38,8 @@ export interface Service {
   Spec: ServiceSpec;
 
   containers: Container[];
+
+  tasks: Task[];
 }
 
 export interface ServiceSpec {
@@ -52,6 +54,16 @@ export interface ServiceMode {
 
 export interface ServiceReplicated {
   Replicas: number;
+}
+
+export interface Task {
+  ID: string;
+
+  NodeID: string;
+
+  ServiceID: string;
+
+  DesiredState: string;
 }
 
 // ====================================================
@@ -216,6 +228,8 @@ export namespace ServiceResolvers {
     Spec?: SpecResolver<ServiceSpec, TypeParent, TContext>;
 
     containers?: ContainersResolver<Container[], TypeParent, TContext>;
+
+    tasks?: TasksResolver<Task[], TypeParent, TContext>;
   }
 
   export type IdResolver<
@@ -240,6 +254,11 @@ export namespace ServiceResolvers {
   > = Resolver<R, Parent, TContext>;
   export type ContainersResolver<
     R = Container[],
+    Parent = Service,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type TasksResolver<
+    R = Task[],
     Parent = Service,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
@@ -295,6 +314,39 @@ export namespace ServiceReplicatedResolvers {
   > = Resolver<R, Parent, TContext>;
 }
 
+export namespace TaskResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = Task> {
+    ID?: IdResolver<string, TypeParent, TContext>;
+
+    NodeID?: NodeIdResolver<string, TypeParent, TContext>;
+
+    ServiceID?: ServiceIdResolver<string, TypeParent, TContext>;
+
+    DesiredState?: DesiredStateResolver<string, TypeParent, TContext>;
+  }
+
+  export type IdResolver<
+    R = string,
+    Parent = Task,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type NodeIdResolver<
+    R = string,
+    Parent = Task,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ServiceIdResolver<
+    R = string,
+    Parent = Task,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DesiredStateResolver<
+    R = string,
+    Parent = Task,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
 /** Directs the executor to skip this field or fragment when the `if` argument is true. */
 export type SkipDirectiveResolver<Result> = DirectiveResolverFn<
   Result,
@@ -335,6 +387,7 @@ export type IResolvers<TContext = MyContext> = {
   ServiceSpec?: ServiceSpecResolvers.Resolvers<TContext>;
   ServiceMode?: ServiceModeResolvers.Resolvers<TContext>;
   ServiceReplicated?: ServiceReplicatedResolvers.Resolvers<TContext>;
+  Task?: TaskResolvers.Resolvers<TContext>;
 } & { [typeName: string]: never };
 
 export type IDirectiveResolvers<Result> = {
