@@ -1,4 +1,5 @@
 import { ApolloServer } from "apollo-server";
+import { port } from "./constants";
 
 const serve = ({ schema, context }) => {
   const server = new ApolloServer({
@@ -6,7 +7,7 @@ const serve = ({ schema, context }) => {
     context
   });
 
-  server.listen().then(({ url }) => {
+  server.listen(port).then(({ url }) => {
     console.log(`🚀  Server ready at ${url}`);
   });
 };

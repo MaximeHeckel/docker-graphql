@@ -11,6 +11,7 @@ const typeDefs = gql`
     UpdatedAt: String!
     Spec: ServiceSpec!
     containers: [Container!]!
+    tasks: [Task!]!
   }
   type ServiceSpec {
     Name: String!
@@ -21,6 +22,12 @@ const typeDefs = gql`
   }
   type ServiceReplicated {
     Replicas: Int!
+  }
+  type Task {
+    ID: ID!
+    NodeID: ID!
+    ServiceID: ID!
+    DesiredState: String!
   }
 `;
 
