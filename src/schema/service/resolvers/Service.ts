@@ -14,6 +14,19 @@ const Service: ServiceResolvers.Resolvers = {
 
     return body;
   },
+  secrets: async (parent, _args, { baseURL }) => {
+    const { ID } = parent;
+    const filters = {
+      service: {
+        [ID]: true
+      }
+    };
+    const { body } = await request.get(
+      `${baseURL}/secrets?filters=${encodeURI(JSON.stringify(filters))}`
+    );
+
+    return body;
+  },
   tasks: async (parent, _args, { baseURL }) => {
     const { ID } = parent;
     const filters = {

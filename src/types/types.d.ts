@@ -9,6 +9,10 @@ export interface Query {
 
   container: Container;
 
+  secrets: Secret[];
+
+  secret: Secret;
+
   services: Service[];
 
   service: Service;
@@ -28,6 +32,16 @@ export interface Container {
   Status: string;
 }
 
+export interface Secret {
+  ID: string;
+
+  Spec?: Maybe<SecretSpec>;
+}
+
+export interface SecretSpec {
+  Name: string;
+}
+
 export interface Service {
   ID: string;
 
@@ -38,6 +52,8 @@ export interface Service {
   Spec: ServiceSpec;
 
   containers: Container[];
+
+  secrets: Secret[];
 
   tasks: Task[];
 }
@@ -71,6 +87,9 @@ export interface Task {
 // ====================================================
 
 export interface ContainerQueryArgs {
+  id: string;
+}
+export interface SecretQueryArgs {
   id: string;
 }
 export interface ServiceQueryArgs {
@@ -136,6 +155,10 @@ export namespace QueryResolvers {
 
     container?: ContainerResolver<Container, TypeParent, TContext>;
 
+    secrets?: SecretsResolver<Secret[], TypeParent, TContext>;
+
+    secret?: SecretResolver<Secret, TypeParent, TContext>;
+
     services?: ServicesResolver<Service[], TypeParent, TContext>;
 
     service?: ServiceResolver<Service, TypeParent, TContext>;
@@ -152,6 +175,20 @@ export namespace QueryResolvers {
     TContext = MyContext
   > = Resolver<R, Parent, TContext, ContainerArgs>;
   export interface ContainerArgs {
+    id: string;
+  }
+
+  export type SecretsResolver<
+    R = Secret[],
+    Parent = {},
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SecretResolver<
+    R = Secret,
+    Parent = {},
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext, SecretArgs>;
+  export interface SecretArgs {
     id: string;
   }
 
@@ -217,6 +254,37 @@ export namespace ContainerResolvers {
   > = Resolver<R, Parent, TContext>;
 }
 
+export namespace SecretResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = Secret> {
+    ID?: IdResolver<string, TypeParent, TContext>;
+
+    Spec?: SpecResolver<Maybe<SecretSpec>, TypeParent, TContext>;
+  }
+
+  export type IdResolver<
+    R = string,
+    Parent = Secret,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SpecResolver<
+    R = Maybe<SecretSpec>,
+    Parent = Secret,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace SecretSpecResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = SecretSpec> {
+    Name?: NameResolver<string, TypeParent, TContext>;
+  }
+
+  export type NameResolver<
+    R = string,
+    Parent = SecretSpec,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
 export namespace ServiceResolvers {
   export interface Resolvers<TContext = MyContext, TypeParent = Service> {
     ID?: IdResolver<string, TypeParent, TContext>;
@@ -228,6 +296,8 @@ export namespace ServiceResolvers {
     Spec?: SpecResolver<ServiceSpec, TypeParent, TContext>;
 
     containers?: ContainersResolver<Container[], TypeParent, TContext>;
+
+    secrets?: SecretsResolver<Secret[], TypeParent, TContext>;
 
     tasks?: TasksResolver<Task[], TypeParent, TContext>;
   }
@@ -254,6 +324,11 @@ export namespace ServiceResolvers {
   > = Resolver<R, Parent, TContext>;
   export type ContainersResolver<
     R = Container[],
+    Parent = Service,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SecretsResolver<
+    R = Secret[],
     Parent = Service,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
@@ -383,6 +458,8 @@ export interface DeprecatedDirectiveArgs {
 export type IResolvers<TContext = MyContext> = {
   Query?: QueryResolvers.Resolvers<TContext>;
   Container?: ContainerResolvers.Resolvers<TContext>;
+  Secret?: SecretResolvers.Resolvers<TContext>;
+  SecretSpec?: SecretSpecResolvers.Resolvers<TContext>;
   Service?: ServiceResolvers.Resolvers<TContext>;
   ServiceSpec?: ServiceSpecResolvers.Resolvers<TContext>;
   ServiceMode?: ServiceModeResolvers.Resolvers<TContext>;

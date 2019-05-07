@@ -11,6 +11,7 @@ const typeDefs = gql`
     UpdatedAt: String!
     Spec: ServiceSpec!
     containers: [Container!]!
+    secrets: [Secret!]!
     tasks: [Task!]!
   }
   type ServiceSpec {
