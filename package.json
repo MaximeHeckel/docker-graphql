@@ -6,7 +6,8 @@
   "author": "@MaximeHeckel",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon",
+    "start:watch": "nodemon",
+    "start": "ts-node ./src/index.ts",
     "generate": "gql-gen"
   },
   "devDependencies": {

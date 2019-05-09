@@ -1,13 +1,19 @@
 export type Maybe<T> = T | null;
 
+export type Json = any;
+
+// ====================================================
+// Scalars
+// ====================================================
+
 // ====================================================
 // Types
 // ====================================================
 
 export interface Query {
-  containers: Container[];
+  containers: ContainerList[];
 
-  container: Container;
+  container: ContainerInspect;
 
   secrets: Secret[];
 
@@ -18,18 +24,72 @@ export interface Query {
   service: Service;
 }
 
-export interface Container {
+export interface ContainerList {
   Id: string;
 
-  Command: string;
+  Names: string[];
 
   Image: string;
 
-  Names: string[];
+  ImageID: string;
+
+  Created?: Maybe<number>;
+
+  Command: string;
 
   State: string;
 
   Status: string;
+
+  Ports?: Maybe<PortType[]>;
+
+  Labels?: Maybe<Json>;
+
+  SizeRw?: Maybe<number>;
+
+  SizeRootFs?: Maybe<number>;
+
+  HostConfig?: Maybe<HostConfigType>;
+
+  NetworkSettings?: Maybe<NetworkSettingsType>;
+
+  Mounts?: Maybe<MountType[]>;
+}
+
+export interface PortType {
+  PrivatePort: number;
+
+  PublicPort?: Maybe<number>;
+
+  Type: string;
+}
+
+export interface HostConfigType {
+  NetworkMode: string;
+}
+
+export interface NetworkSettingsType {
+  Networks?: Maybe<Json>;
+}
+
+export interface MountType {
+  Name: string;
+
+  Source: string;
+
+  Destination: string;
+
+  Driver: string;
+
+  Mode: string;
+
+  RW: boolean;
+
+  Propagation: string;
+}
+
+export interface ContainerInspect {
+  Name: string;
 }
 
 export interface Secret {
@@ -51,7 +111,7 @@ export interface Service {
 
   Spec: ServiceSpec;
 
-  containers: Container[];
+  containers: ContainerList[];
 
   secrets: Secret[];
 
@@ -96,7 +156,11 @@ export interface ServiceQueryArgs {
   id: string;
 }
 
-import { GraphQLResolveInfo } from "graphql";
+import {
+  GraphQLResolveInfo,
+  GraphQLScalarType,
+  GraphQLScalarTypeConfig
+} from "graphql";
 
 import { MyContext } from "./context";
 
@@ -151,9 +215,9 @@ export type DirectiveResolverFn<TResult, TArgs = {}, TContext = {}> = (
 
 export namespace QueryResolvers {
   export interface Resolvers<TContext = MyContext, TypeParent = {}> {
-    containers?: ContainersResolver<Container[], TypeParent, TContext>;
+    containers?: ContainersResolver<ContainerList[], TypeParent, TContext>;
 
-    container?: ContainerResolver<Container, TypeParent, TContext>;
+    container?: ContainerResolver<ContainerInspect, TypeParent, TContext>;
 
     secrets?: SecretsResolver<Secret[], TypeParent, TContext>;
 
@@ -165,12 +229,12 @@ export namespace QueryResolvers {
   }
 
   export type ContainersResolver<
-    R = Container[],
+    R = ContainerList[],
     Parent = {},
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
   export type ContainerResolver<
-    R = Container,
+    R = ContainerInspect,
     Parent = {},
     TContext = MyContext
   > = Resolver<R, Parent, TContext, ContainerArgs>;
@@ -207,49 +271,245 @@ export namespace QueryResolvers {
   }
 }
 
-export namespace ContainerResolvers {
-  export interface Resolvers<TContext = MyContext, TypeParent = Container> {
+export namespace ContainerListResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = ContainerList> {
     Id?: IdResolver<string, TypeParent, TContext>;
 
-    Command?: CommandResolver<string, TypeParent, TContext>;
+    Names?: NamesResolver<string[], TypeParent, TContext>;
 
     Image?: ImageResolver<string, TypeParent, TContext>;
 
-    Names?: NamesResolver<string[], TypeParent, TContext>;
+    ImageID?: ImageIdResolver<string, TypeParent, TContext>;
+
+    Created?: CreatedResolver<Maybe<number>, TypeParent, TContext>;
+
+    Command?: CommandResolver<string, TypeParent, TContext>;
 
     State?: StateResolver<string, TypeParent, TContext>;
 
     Status?: StatusResolver<string, TypeParent, TContext>;
+
+    Ports?: PortsResolver<Maybe<PortType[]>, TypeParent, TContext>;
+
+    Labels?: LabelsResolver<Maybe<Json>, TypeParent, TContext>;
+
+    SizeRw?: SizeRwResolver<Maybe<number>, TypeParent, TContext>;
+
+    SizeRootFs?: SizeRootFsResolver<Maybe<number>, TypeParent, TContext>;
+
+    HostConfig?: HostConfigResolver<
+      Maybe<HostConfigType>,
+      TypeParent,
+      TContext
+    >;
+
+    NetworkSettings?: NetworkSettingsResolver<
+      Maybe<NetworkSettingsType>,
+      TypeParent,
+      TContext
+    >;
+
+    Mounts?: MountsResolver<Maybe<MountType[]>, TypeParent, TContext>;
   }
 
   export type IdResolver<
     R = string,
-    Parent = Container,
-    TContext = MyContext
-  > = Resolver<R, Parent, TContext>;
-  export type CommandResolver<
-    R = string,
-    Parent = Container,
-    TContext = MyContext
-  > = Resolver<R, Parent, TContext>;
-  export type ImageResolver<
-    R = string,
-    Parent = Container,
+    Parent = ContainerList,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
   export type NamesResolver<
     R = string[],
-    Parent = Container,
+    Parent = ContainerList,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ImageResolver<
+    R = string,
+    Parent = ContainerList,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ImageIdResolver<
+    R = string,
+    Parent = ContainerList,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CreatedResolver<
+    R = Maybe<number>,
+    Parent = ContainerList,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CommandResolver<
+    R = string,
+    Parent = ContainerList,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
   export type StateResolver<
     R = string,
-    Parent = Container,
+    Parent = ContainerList,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
   export type StatusResolver<
     R = string,
-    Parent = Container,
+    Parent = ContainerList,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type PortsResolver<
+    R = Maybe<PortType[]>,
+    Parent = ContainerList,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type LabelsResolver<
+    R = Maybe<Json>,
+    Parent = ContainerList,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SizeRwResolver<
+    R = Maybe<number>,
+    Parent = ContainerList,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SizeRootFsResolver<
+    R = Maybe<number>,
+    Parent = ContainerList,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type HostConfigResolver<
+    R = Maybe<HostConfigType>,
+    Parent = ContainerList,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type NetworkSettingsResolver<
+    R = Maybe<NetworkSettingsType>,
+    Parent = ContainerList,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type MountsResolver<
+    R = Maybe<MountType[]>,
+    Parent = ContainerList,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace PortTypeResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = PortType> {
+    PrivatePort?: PrivatePortResolver<number, TypeParent, TContext>;
+
+    PublicPort?: PublicPortResolver<Maybe<number>, TypeParent, TContext>;
+
+    Type?: TypeResolver<string, TypeParent, TContext>;
+  }
+
+  export type PrivatePortResolver<
+    R = number,
+    Parent = PortType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type PublicPortResolver<
+    R = Maybe<number>,
+    Parent = PortType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type TypeResolver<
+    R = string,
+    Parent = PortType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace HostConfigTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = HostConfigType
+  > {
+    NetworkMode?: NetworkModeResolver<string, TypeParent, TContext>;
+  }
+
+  export type NetworkModeResolver<
+    R = string,
+    Parent = HostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace NetworkSettingsTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = NetworkSettingsType
+  > {
+    Networks?: NetworksResolver<Maybe<Json>, TypeParent, TContext>;
+  }
+
+  export type NetworksResolver<
+    R = Maybe<Json>,
+    Parent = NetworkSettingsType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace MountTypeResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = MountType> {
+    Name?: NameResolver<string, TypeParent, TContext>;
+
+    Source?: SourceResolver<string, TypeParent, TContext>;
+
+    Destination?: DestinationResolver<string, TypeParent, TContext>;
+
+    Driver?: DriverResolver<string, TypeParent, TContext>;
+
+    Mode?: ModeResolver<string, TypeParent, TContext>;
+
+    RW?: RwResolver<boolean, TypeParent, TContext>;
+
+    Propagation?: PropagationResolver<string, TypeParent, TContext>;
+  }
+
+  export type NameResolver<
+    R = string,
+    Parent = MountType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SourceResolver<
+    R = string,
+    Parent = MountType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DestinationResolver<
+    R = string,
+    Parent = MountType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DriverResolver<
+    R = string,
+    Parent = MountType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ModeResolver<
+    R = string,
+    Parent = MountType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type RwResolver<
+    R = boolean,
+    Parent = MountType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type PropagationResolver<
+    R = string,
+    Parent = MountType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ContainerInspectResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = ContainerInspect
+  > {
+    Name?: NameResolver<string, TypeParent, TContext>;
+  }
+
+  export type NameResolver<
+    R = string,
+    Parent = ContainerInspect,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
 }
@@ -295,7 +555,7 @@ export namespace ServiceResolvers {
 
     Spec?: SpecResolver<ServiceSpec, TypeParent, TContext>;
 
-    containers?: ContainersResolver<Container[], TypeParent, TContext>;
+    containers?: ContainersResolver<ContainerList[], TypeParent, TContext>;
 
     secrets?: SecretsResolver<Secret[], TypeParent, TContext>;
 
@@ -323,7 +583,7 @@ export namespace ServiceResolvers {
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
   export type ContainersResolver<
-    R = Container[],
+    R = ContainerList[],
     Parent = Service,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
@@ -455,9 +715,18 @@ export interface DeprecatedDirectiveArgs {
   reason?: string;
 }
 
+export interface JSONScalarConfig extends GraphQLScalarTypeConfig<Json, any> {
+  name: "JSON";
+}
+
 export type IResolvers<TContext = MyContext> = {
   Query?: QueryResolvers.Resolvers<TContext>;
-  Container?: ContainerResolvers.Resolvers<TContext>;
+  ContainerList?: ContainerListResolvers.Resolvers<TContext>;
+  PortType?: PortTypeResolvers.Resolvers<TContext>;
+  HostConfigType?: HostConfigTypeResolvers.Resolvers<TContext>;
+  NetworkSettingsType?: NetworkSettingsTypeResolvers.Resolvers<TContext>;
+  MountType?: MountTypeResolvers.Resolvers<TContext>;
+  ContainerInspect?: ContainerInspectResolvers.Resolvers<TContext>;
   Secret?: SecretResolvers.Resolvers<TContext>;
   SecretSpec?: SecretSpecResolvers.Resolvers<TContext>;
   Service?: ServiceResolvers.Resolvers<TContext>;
@@ -465,6 +734,7 @@ export type IResolvers<TContext = MyContext> = {
   ServiceMode?: ServiceModeResolvers.Resolvers<TContext>;
   ServiceReplicated?: ServiceReplicatedResolvers.Resolvers<TContext>;
   Task?: TaskResolvers.Resolvers<TContext>;
+  Json?: GraphQLScalarType;
 } & { [typeName: string]: never };
 
 export type IDirectiveResolvers<Result> = {
