@@ -89,7 +89,187 @@ export interface MountType {
 }
 
 export interface ContainerInspect {
+  AppArmorProfile?: Maybe<string>;
+
+  Args?: Maybe<(Maybe<string>)[]>;
+
+  Config?: Maybe<ContainerConfigType>;
+
+  Created: string;
+
+  Driver: string;
+
+  ExecIDs: string[];
+
+  HostConfig?: Maybe<ContainerHostConfigType>;
+
+  HostnamePath: string;
+
+  HostPath: string;
+
+  LogPath: string;
+
+  Id: string;
+
+  Image: string;
+
+  MountLabel?: Maybe<string>;
+
   Name: string;
+
+  NetworkSettings?: Maybe<Json>;
+
+  Path?: Maybe<string>;
+
+  ProcessLabel?: Maybe<string>;
+
+  ResolvConfPath: string;
+
+  RestartCount?: Maybe<number>;
+
+  State?: Maybe<ContainerStateType>;
+
+  Mounts?: Maybe<(Maybe<MountType>)[]>;
+}
+
+export interface ContainerConfigType {
+  AttachStderr?: Maybe<boolean>;
+
+  AttachStdin?: Maybe<boolean>;
+
+  AttachStdout?: Maybe<boolean>;
+
+  Cmd?: Maybe<(Maybe<string>)[]>;
+
+  Domainname?: Maybe<string>;
+
+  Env?: Maybe<(Maybe<string>)[]>;
+
+  Hostname: string;
+
+  Image: string;
+
+  Labels?: Maybe<Json>;
+
+  MaxAddress?: Maybe<string>;
+
+  NetworkDisabled?: Maybe<boolean>;
+
+  OpenStdin?: Maybe<boolean>;
+
+  StdinOnce?: Maybe<boolean>;
+
+  Tty?: Maybe<boolean>;
+
+  User?: Maybe<string>;
+
+  Volumes?: Maybe<Json>;
+
+  WorkingDir?: Maybe<string>;
+
+  StopSignal: string;
+
+  StopTimeout?: Maybe<number>;
+}
+
+export interface ContainerHostConfigType {
+  MaximumIOps?: Maybe<number>;
+
+  MaximumIOBps?: Maybe<number>;
+
+  BlkioWeight?: Maybe<number>;
+
+  BlkioWeightDevice?: Maybe<(Maybe<Json>)[]>;
+
+  BlkioDeviceReadBps?: Maybe<(Maybe<Json>)[]>;
+
+  BlkioDeviceWriteBps?: Maybe<(Maybe<Json>)[]>;
+
+  BlkioDeviceReadIOps?: Maybe<(Maybe<Json>)[]>;
+
+  BlkioDeviceWriteIOps?: Maybe<(Maybe<Json>)[]>;
+
+  ContainerIDFile?: Maybe<string>;
+
+  CpusetCpus?: Maybe<string>;
+
+  CpusetMems?: Maybe<string>;
+
+  CpuPeriod?: Maybe<number>;
+
+  CpuRealtimePeriod?: Maybe<number>;
+
+  CpuRealtimeRuntime?: Maybe<number>;
+
+  Devices?: Maybe<(Maybe<string>)[]>;
+
+  IpcMode?: Maybe<string>;
+
+  Memory?: Maybe<number>;
+
+  MemorySwap?: Maybe<number>;
+
+  MemoryReservation?: Maybe<number>;
+
+  KernelMemory?: Maybe<number>;
+
+  OomKillDisable?: Maybe<boolean>;
+
+  OomScoreAdj?: Maybe<number>;
+
+  NetworkMode: string;
+
+  PidMode?: Maybe<string>;
+
+  PortBindings?: Maybe<Json>;
+
+  Privileged?: Maybe<boolean>;
+
+  ReadonlyRootfs?: Maybe<boolean>;
+
+  PublishAllPorts?: Maybe<boolean>;
+
+  RestartPolicy?: Maybe<RestartPolicyType>;
+
+  LogConfig?: Maybe<Json>;
+
+  Sysctls?: Maybe<Json>;
+
+  Ulimits?: Maybe<(Maybe<Json>)[]>;
+
+  VolumeDriver?: Maybe<string>;
+
+  ShmSize?: Maybe<number>;
+}
+
+export interface RestartPolicyType {
+  MaximumRetryCount?: Maybe<number>;
+
+  Name?: Maybe<string>;
+}
+
+export interface ContainerStateType {
+  Error?: Maybe<string>;
+
+  ExitCode?: Maybe<number>;
+
+  FinishedAt?: Maybe<string>;
+
+  OOMKilled?: Maybe<boolean>;
+
+  Dead?: Maybe<boolean>;
+
+  Paused?: Maybe<boolean>;
+
+  Pid?: Maybe<number>;
+
+  Restarting?: Maybe<boolean>;
+
+  Running?: Maybe<boolean>;
+
+  StartedAt?: Maybe<string>;
+
+  Status?: Maybe<string>;
 }
 
 export interface Secret {
@@ -504,12 +684,718 @@ export namespace ContainerInspectResolvers {
     TContext = MyContext,
     TypeParent = ContainerInspect
   > {
+    AppArmorProfile?: AppArmorProfileResolver<
+      Maybe<string>,
+      TypeParent,
+      TContext
+    >;
+
+    Args?: ArgsResolver<Maybe<(Maybe<string>)[]>, TypeParent, TContext>;
+
+    Config?: ConfigResolver<Maybe<ContainerConfigType>, TypeParent, TContext>;
+
+    Created?: CreatedResolver<string, TypeParent, TContext>;
+
+    Driver?: DriverResolver<string, TypeParent, TContext>;
+
+    ExecIDs?: ExecIDsResolver<string[], TypeParent, TContext>;
+
+    HostConfig?: HostConfigResolver<
+      Maybe<ContainerHostConfigType>,
+      TypeParent,
+      TContext
+    >;
+
+    HostnamePath?: HostnamePathResolver<string, TypeParent, TContext>;
+
+    HostPath?: HostPathResolver<string, TypeParent, TContext>;
+
+    LogPath?: LogPathResolver<string, TypeParent, TContext>;
+
+    Id?: IdResolver<string, TypeParent, TContext>;
+
+    Image?: ImageResolver<string, TypeParent, TContext>;
+
+    MountLabel?: MountLabelResolver<Maybe<string>, TypeParent, TContext>;
+
     Name?: NameResolver<string, TypeParent, TContext>;
+
+    NetworkSettings?: NetworkSettingsResolver<
+      Maybe<Json>,
+      TypeParent,
+      TContext
+    >;
+
+    Path?: PathResolver<Maybe<string>, TypeParent, TContext>;
+
+    ProcessLabel?: ProcessLabelResolver<Maybe<string>, TypeParent, TContext>;
+
+    ResolvConfPath?: ResolvConfPathResolver<string, TypeParent, TContext>;
+
+    RestartCount?: RestartCountResolver<Maybe<number>, TypeParent, TContext>;
+
+    State?: StateResolver<Maybe<ContainerStateType>, TypeParent, TContext>;
+
+    Mounts?: MountsResolver<Maybe<(Maybe<MountType>)[]>, TypeParent, TContext>;
   }
 
+  export type AppArmorProfileResolver<
+    R = Maybe<string>,
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ArgsResolver<
+    R = Maybe<(Maybe<string>)[]>,
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ConfigResolver<
+    R = Maybe<ContainerConfigType>,
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CreatedResolver<
+    R = string,
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DriverResolver<
+    R = string,
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ExecIDsResolver<
+    R = string[],
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type HostConfigResolver<
+    R = Maybe<ContainerHostConfigType>,
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type HostnamePathResolver<
+    R = string,
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type HostPathResolver<
+    R = string,
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type LogPathResolver<
+    R = string,
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type IdResolver<
+    R = string,
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ImageResolver<
+    R = string,
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type MountLabelResolver<
+    R = Maybe<string>,
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
   export type NameResolver<
     R = string,
     Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type NetworkSettingsResolver<
+    R = Maybe<Json>,
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type PathResolver<
+    R = Maybe<string>,
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ProcessLabelResolver<
+    R = Maybe<string>,
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ResolvConfPathResolver<
+    R = string,
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type RestartCountResolver<
+    R = Maybe<number>,
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type StateResolver<
+    R = Maybe<ContainerStateType>,
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type MountsResolver<
+    R = Maybe<(Maybe<MountType>)[]>,
+    Parent = ContainerInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ContainerConfigTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = ContainerConfigType
+  > {
+    AttachStderr?: AttachStderrResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    AttachStdin?: AttachStdinResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    AttachStdout?: AttachStdoutResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    Cmd?: CmdResolver<Maybe<(Maybe<string>)[]>, TypeParent, TContext>;
+
+    Domainname?: DomainnameResolver<Maybe<string>, TypeParent, TContext>;
+
+    Env?: EnvResolver<Maybe<(Maybe<string>)[]>, TypeParent, TContext>;
+
+    Hostname?: HostnameResolver<string, TypeParent, TContext>;
+
+    Image?: ImageResolver<string, TypeParent, TContext>;
+
+    Labels?: LabelsResolver<Maybe<Json>, TypeParent, TContext>;
+
+    MaxAddress?: MaxAddressResolver<Maybe<string>, TypeParent, TContext>;
+
+    NetworkDisabled?: NetworkDisabledResolver<
+      Maybe<boolean>,
+      TypeParent,
+      TContext
+    >;
+
+    OpenStdin?: OpenStdinResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    StdinOnce?: StdinOnceResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    Tty?: TtyResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    User?: UserResolver<Maybe<string>, TypeParent, TContext>;
+
+    Volumes?: VolumesResolver<Maybe<Json>, TypeParent, TContext>;
+
+    WorkingDir?: WorkingDirResolver<Maybe<string>, TypeParent, TContext>;
+
+    StopSignal?: StopSignalResolver<string, TypeParent, TContext>;
+
+    StopTimeout?: StopTimeoutResolver<Maybe<number>, TypeParent, TContext>;
+  }
+
+  export type AttachStderrResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type AttachStdinResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type AttachStdoutResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CmdResolver<
+    R = Maybe<(Maybe<string>)[]>,
+    Parent = ContainerConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DomainnameResolver<
+    R = Maybe<string>,
+    Parent = ContainerConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type EnvResolver<
+    R = Maybe<(Maybe<string>)[]>,
+    Parent = ContainerConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type HostnameResolver<
+    R = string,
+    Parent = ContainerConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ImageResolver<
+    R = string,
+    Parent = ContainerConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type LabelsResolver<
+    R = Maybe<Json>,
+    Parent = ContainerConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type MaxAddressResolver<
+    R = Maybe<string>,
+    Parent = ContainerConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type NetworkDisabledResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type OpenStdinResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type StdinOnceResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type TtyResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type UserResolver<
+    R = Maybe<string>,
+    Parent = ContainerConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type VolumesResolver<
+    R = Maybe<Json>,
+    Parent = ContainerConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type WorkingDirResolver<
+    R = Maybe<string>,
+    Parent = ContainerConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type StopSignalResolver<
+    R = string,
+    Parent = ContainerConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type StopTimeoutResolver<
+    R = Maybe<number>,
+    Parent = ContainerConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ContainerHostConfigTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = ContainerHostConfigType
+  > {
+    MaximumIOps?: MaximumIOpsResolver<Maybe<number>, TypeParent, TContext>;
+
+    MaximumIOBps?: MaximumIoBpsResolver<Maybe<number>, TypeParent, TContext>;
+
+    BlkioWeight?: BlkioWeightResolver<Maybe<number>, TypeParent, TContext>;
+
+    BlkioWeightDevice?: BlkioWeightDeviceResolver<
+      Maybe<(Maybe<Json>)[]>,
+      TypeParent,
+      TContext
+    >;
+
+    BlkioDeviceReadBps?: BlkioDeviceReadBpsResolver<
+      Maybe<(Maybe<Json>)[]>,
+      TypeParent,
+      TContext
+    >;
+
+    BlkioDeviceWriteBps?: BlkioDeviceWriteBpsResolver<
+      Maybe<(Maybe<Json>)[]>,
+      TypeParent,
+      TContext
+    >;
+
+    BlkioDeviceReadIOps?: BlkioDeviceReadIOpsResolver<
+      Maybe<(Maybe<Json>)[]>,
+      TypeParent,
+      TContext
+    >;
+
+    BlkioDeviceWriteIOps?: BlkioDeviceWriteIOpsResolver<
+      Maybe<(Maybe<Json>)[]>,
+      TypeParent,
+      TContext
+    >;
+
+    ContainerIDFile?: ContainerIdFileResolver<
+      Maybe<string>,
+      TypeParent,
+      TContext
+    >;
+
+    CpusetCpus?: CpusetCpusResolver<Maybe<string>, TypeParent, TContext>;
+
+    CpusetMems?: CpusetMemsResolver<Maybe<string>, TypeParent, TContext>;
+
+    CpuPeriod?: CpuPeriodResolver<Maybe<number>, TypeParent, TContext>;
+
+    CpuRealtimePeriod?: CpuRealtimePeriodResolver<
+      Maybe<number>,
+      TypeParent,
+      TContext
+    >;
+
+    CpuRealtimeRuntime?: CpuRealtimeRuntimeResolver<
+      Maybe<number>,
+      TypeParent,
+      TContext
+    >;
+
+    Devices?: DevicesResolver<Maybe<(Maybe<string>)[]>, TypeParent, TContext>;
+
+    IpcMode?: IpcModeResolver<Maybe<string>, TypeParent, TContext>;
+
+    Memory?: MemoryResolver<Maybe<number>, TypeParent, TContext>;
+
+    MemorySwap?: MemorySwapResolver<Maybe<number>, TypeParent, TContext>;
+
+    MemoryReservation?: MemoryReservationResolver<
+      Maybe<number>,
+      TypeParent,
+      TContext
+    >;
+
+    KernelMemory?: KernelMemoryResolver<Maybe<number>, TypeParent, TContext>;
+
+    OomKillDisable?: OomKillDisableResolver<
+      Maybe<boolean>,
+      TypeParent,
+      TContext
+    >;
+
+    OomScoreAdj?: OomScoreAdjResolver<Maybe<number>, TypeParent, TContext>;
+
+    NetworkMode?: NetworkModeResolver<string, TypeParent, TContext>;
+
+    PidMode?: PidModeResolver<Maybe<string>, TypeParent, TContext>;
+
+    PortBindings?: PortBindingsResolver<Maybe<Json>, TypeParent, TContext>;
+
+    Privileged?: PrivilegedResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    ReadonlyRootfs?: ReadonlyRootfsResolver<
+      Maybe<boolean>,
+      TypeParent,
+      TContext
+    >;
+
+    PublishAllPorts?: PublishAllPortsResolver<
+      Maybe<boolean>,
+      TypeParent,
+      TContext
+    >;
+
+    RestartPolicy?: RestartPolicyResolver<
+      Maybe<RestartPolicyType>,
+      TypeParent,
+      TContext
+    >;
+
+    LogConfig?: LogConfigResolver<Maybe<Json>, TypeParent, TContext>;
+
+    Sysctls?: SysctlsResolver<Maybe<Json>, TypeParent, TContext>;
+
+    Ulimits?: UlimitsResolver<Maybe<(Maybe<Json>)[]>, TypeParent, TContext>;
+
+    VolumeDriver?: VolumeDriverResolver<Maybe<string>, TypeParent, TContext>;
+
+    ShmSize?: ShmSizeResolver<Maybe<number>, TypeParent, TContext>;
+  }
+
+  export type MaximumIOpsResolver<
+    R = Maybe<number>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type MaximumIoBpsResolver<
+    R = Maybe<number>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type BlkioWeightResolver<
+    R = Maybe<number>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type BlkioWeightDeviceResolver<
+    R = Maybe<(Maybe<Json>)[]>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type BlkioDeviceReadBpsResolver<
+    R = Maybe<(Maybe<Json>)[]>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type BlkioDeviceWriteBpsResolver<
+    R = Maybe<(Maybe<Json>)[]>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type BlkioDeviceReadIOpsResolver<
+    R = Maybe<(Maybe<Json>)[]>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type BlkioDeviceWriteIOpsResolver<
+    R = Maybe<(Maybe<Json>)[]>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ContainerIdFileResolver<
+    R = Maybe<string>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CpusetCpusResolver<
+    R = Maybe<string>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CpusetMemsResolver<
+    R = Maybe<string>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CpuPeriodResolver<
+    R = Maybe<number>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CpuRealtimePeriodResolver<
+    R = Maybe<number>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CpuRealtimeRuntimeResolver<
+    R = Maybe<number>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DevicesResolver<
+    R = Maybe<(Maybe<string>)[]>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type IpcModeResolver<
+    R = Maybe<string>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type MemoryResolver<
+    R = Maybe<number>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type MemorySwapResolver<
+    R = Maybe<number>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type MemoryReservationResolver<
+    R = Maybe<number>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type KernelMemoryResolver<
+    R = Maybe<number>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type OomKillDisableResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type OomScoreAdjResolver<
+    R = Maybe<number>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type NetworkModeResolver<
+    R = string,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type PidModeResolver<
+    R = Maybe<string>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type PortBindingsResolver<
+    R = Maybe<Json>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type PrivilegedResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ReadonlyRootfsResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type PublishAllPortsResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type RestartPolicyResolver<
+    R = Maybe<RestartPolicyType>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type LogConfigResolver<
+    R = Maybe<Json>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SysctlsResolver<
+    R = Maybe<Json>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type UlimitsResolver<
+    R = Maybe<(Maybe<Json>)[]>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type VolumeDriverResolver<
+    R = Maybe<string>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ShmSizeResolver<
+    R = Maybe<number>,
+    Parent = ContainerHostConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace RestartPolicyTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = RestartPolicyType
+  > {
+    MaximumRetryCount?: MaximumRetryCountResolver<
+      Maybe<number>,
+      TypeParent,
+      TContext
+    >;
+
+    Name?: NameResolver<Maybe<string>, TypeParent, TContext>;
+  }
+
+  export type MaximumRetryCountResolver<
+    R = Maybe<number>,
+    Parent = RestartPolicyType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type NameResolver<
+    R = Maybe<string>,
+    Parent = RestartPolicyType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ContainerStateTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = ContainerStateType
+  > {
+    Error?: ErrorResolver<Maybe<string>, TypeParent, TContext>;
+
+    ExitCode?: ExitCodeResolver<Maybe<number>, TypeParent, TContext>;
+
+    FinishedAt?: FinishedAtResolver<Maybe<string>, TypeParent, TContext>;
+
+    OOMKilled?: OomKilledResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    Dead?: DeadResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    Paused?: PausedResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    Pid?: PidResolver<Maybe<number>, TypeParent, TContext>;
+
+    Restarting?: RestartingResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    Running?: RunningResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    StartedAt?: StartedAtResolver<Maybe<string>, TypeParent, TContext>;
+
+    Status?: StatusResolver<Maybe<string>, TypeParent, TContext>;
+  }
+
+  export type ErrorResolver<
+    R = Maybe<string>,
+    Parent = ContainerStateType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ExitCodeResolver<
+    R = Maybe<number>,
+    Parent = ContainerStateType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type FinishedAtResolver<
+    R = Maybe<string>,
+    Parent = ContainerStateType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type OomKilledResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerStateType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DeadResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerStateType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type PausedResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerStateType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type PidResolver<
+    R = Maybe<number>,
+    Parent = ContainerStateType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type RestartingResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerStateType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type RunningResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerStateType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type StartedAtResolver<
+    R = Maybe<string>,
+    Parent = ContainerStateType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type StatusResolver<
+    R = Maybe<string>,
+    Parent = ContainerStateType,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
 }
@@ -727,6 +1613,12 @@ export type IResolvers<TContext = MyContext> = {
   NetworkSettingsType?: NetworkSettingsTypeResolvers.Resolvers<TContext>;
   MountType?: MountTypeResolvers.Resolvers<TContext>;
   ContainerInspect?: ContainerInspectResolvers.Resolvers<TContext>;
+  ContainerConfigType?: ContainerConfigTypeResolvers.Resolvers<TContext>;
+  ContainerHostConfigType?: ContainerHostConfigTypeResolvers.Resolvers<
+    TContext
+  >;
+  RestartPolicyType?: RestartPolicyTypeResolvers.Resolvers<TContext>;
+  ContainerStateType?: ContainerStateTypeResolvers.Resolvers<TContext>;
   Secret?: SecretResolvers.Resolvers<TContext>;
   SecretSpec?: SecretSpecResolvers.Resolvers<TContext>;
   Service?: ServiceResolvers.Resolvers<TContext>;
