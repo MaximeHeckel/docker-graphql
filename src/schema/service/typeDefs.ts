@@ -5,25 +5,92 @@ const typeDefs = gql`
     services: [Service!]!
     service(id: ID!): Service!
   }
+
+  type ServiceVersionType {
+    Index: Int
+  }
+
+  type ContainerSpecType {
+    Image: String!
+  }
+
+  type ResourcesType {
+    Limits: JSON
+    Reservations: JSON
+  }
+
+  type ServiceRestartPolicyType {
+    Condition: String!
+    MaxAttempt: Int
+  }
+
+  type ServiceTaskTemplateType {
+    ContainerSpec: ContainerSpecType
+    Resources: ResourcesType
+    RestartPolicy: ServiceRestartPolicyType
+    Placement: JSON
+    ForceUpdate: Int
+  }
+
+  type ServiceMode {
+    Replicated: ServiceReplicated
+  }
+
+  type ServiceReplicated {
+    Replicas: Int!
+  }
+
+  type ServiceConfigType {
+    Parallelism: Int
+    Delay: Int
+    FailureAction: String!
+    Monitor: Int
+    MaxFailureRatio: Int
+  }
+
+  type ServiceSpecType {
+    Name: String!
+    TaskTemplate: ServiceTaskTemplateType
+    Mode: ServiceMode
+    UpdateConfig: ServiceConfigType
+    RollbackConfig: ServiceConfigType
+    EndpointSpec: ServiceEndpointSpecType
+  }
+
+  type ServicePortType {
+    Protocol: String
+    TargetPort: Int
+    PublishedPort: Int
+  }
+
+  type VirtualIPType {
+    NetworkID: String
+    Addr: String
+  }
+
+  type ServiceEndpointSpecType {
+    Mode: String!
+    Ports: [ServicePortType]
+  }
+
+  type ServiceEndpointType {
+    Spec: ServiceEndpointSpecType
+    Ports: [ServicePortType]
+    VirtualIPs: [VirtualIPType]
+  }
+
   type Service {
     ID: ID!
+    Version: ServiceVersionType
     CreatedAt: String!
     UpdatedAt: String!
-    Spec: ServiceSpec!
+    Spec: ServiceSpecType!
+    Endpoint: ServiceEndpointType
     containers: [ContainerList!]!
     secrets: [Secret!]!
     tasks: [Task!]!
   }
-  type ServiceSpec {
-    Name: String!
-    Mode: ServiceMode
-  }
-  type ServiceMode {
-    Replicated: ServiceReplicated
-  }
-  type ServiceReplicated {
-    Replicas: Int!
-  }
+
   type Task {
     ID: ID!
     NodeID: ID!

@@ -285,11 +285,15 @@ export interface SecretSpec {
 export interface Service {
   ID: string;
 
+  Version?: Maybe<ServiceVersionType>;
+
   CreatedAt: string;
 
   UpdatedAt: string;
 
-  Spec: ServiceSpec;
+  Spec: ServiceSpecType;
+
+  Endpoint?: Maybe<ServiceEndpointType>;
 
   containers: ContainerList[];
 
@@ -298,10 +302,50 @@ export interface Service {
   tasks: Task[];
 }
 
-export interface ServiceSpec {
+export interface ServiceVersionType {
+  Index?: Maybe<number>;
+}
+
+export interface ServiceSpecType {
   Name: string;
 
+  TaskTemplate?: Maybe<ServiceTaskTemplateType>;
+
   Mode?: Maybe<ServiceMode>;
+
+  UpdateConfig?: Maybe<ServiceConfigType>;
+
+  RollbackConfig?: Maybe<ServiceConfigType>;
+
+  EndpointSpec?: Maybe<ServiceEndpointSpecType>;
+}
+
+export interface ServiceTaskTemplateType {
+  ContainerSpec?: Maybe<ContainerSpecType>;
+
+  Resources?: Maybe<ResourcesType>;
+
+  RestartPolicy?: Maybe<ServiceRestartPolicyType>;
+
+  Placement?: Maybe<Json>;
+
+  ForceUpdate?: Maybe<number>;
+}
+
+export interface ContainerSpecType {
+  Image: string;
+}
+
+export interface ResourcesType {
+  Limits?: Maybe<Json>;
+
+  Reservations?: Maybe<Json>;
+}
+
+export interface ServiceRestartPolicyType {
+  Condition: string;
+
+  MaxAttempt?: Maybe<number>;
 }
 
 export interface ServiceMode {
@@ -310,6 +354,46 @@ export interface ServiceMode {
 
 export interface ServiceReplicated {
   Replicas: number;
+}
+
+export interface ServiceConfigType {
+  Parallelism?: Maybe<number>;
+
+  Delay?: Maybe<number>;
+
+  FailureAction: string;
+
+  Monitor?: Maybe<number>;
+
+  MaxFailureRatio?: Maybe<number>;
+}
+
+export interface ServiceEndpointSpecType {
+  Mode: string;
+
+  Ports?: Maybe<(Maybe<ServicePortType>)[]>;
+}
+
+export interface ServicePortType {
+  Protocol?: Maybe<string>;
+
+  TargetPort?: Maybe<number>;
+
+  PublishedPort?: Maybe<number>;
+}
+
+export interface ServiceEndpointType {
+  Spec?: Maybe<ServiceEndpointSpecType>;
+
+  Ports?: Maybe<(Maybe<ServicePortType>)[]>;
+
+  VirtualIPs?: Maybe<(Maybe<VirtualIpType>)[]>;
+}
+
+export interface VirtualIpType {
+  NetworkID?: Maybe<string>;
+
+  Addr?: Maybe<string>;
 }
 
 export interface Task {
@@ -1435,11 +1519,19 @@ export namespace ServiceResolvers {
   export interface Resolvers<TContext = MyContext, TypeParent = Service> {
     ID?: IdResolver<string, TypeParent, TContext>;
 
+    Version?: VersionResolver<Maybe<ServiceVersionType>, TypeParent, TContext>;
+
     CreatedAt?: CreatedAtResolver<string, TypeParent, TContext>;
 
     UpdatedAt?: UpdatedAtResolver<string, TypeParent, TContext>;
 
-    Spec?: SpecResolver<ServiceSpec, TypeParent, TContext>;
+    Spec?: SpecResolver<ServiceSpecType, TypeParent, TContext>;
+
+    Endpoint?: EndpointResolver<
+      Maybe<ServiceEndpointType>,
+      TypeParent,
+      TContext
+    >;
 
     containers?: ContainersResolver<ContainerList[], TypeParent, TContext>;
 
@@ -1450,6 +1542,11 @@ export namespace ServiceResolvers {
 
   export type IdResolver<
     R = string,
+    Parent = Service,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type VersionResolver<
+    R = Maybe<ServiceVersionType>,
     Parent = Service,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
@@ -1464,7 +1561,12 @@ export namespace ServiceResolvers {
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
   export type SpecResolver<
-    R = ServiceSpec,
+    R = ServiceSpecType,
+    Parent = Service,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type EndpointResolver<
+    R = Maybe<ServiceEndpointType>,
     Parent = Service,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
@@ -1485,21 +1587,190 @@ export namespace ServiceResolvers {
   > = Resolver<R, Parent, TContext>;
 }
 
-export namespace ServiceSpecResolvers {
-  export interface Resolvers<TContext = MyContext, TypeParent = ServiceSpec> {
+export namespace ServiceVersionTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = ServiceVersionType
+  > {
+    Index?: IndexResolver<Maybe<number>, TypeParent, TContext>;
+  }
+
+  export type IndexResolver<
+    R = Maybe<number>,
+    Parent = ServiceVersionType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ServiceSpecTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = ServiceSpecType
+  > {
     Name?: NameResolver<string, TypeParent, TContext>;
 
+    TaskTemplate?: TaskTemplateResolver<
+      Maybe<ServiceTaskTemplateType>,
+      TypeParent,
+      TContext
+    >;
+
     Mode?: ModeResolver<Maybe<ServiceMode>, TypeParent, TContext>;
+
+    UpdateConfig?: UpdateConfigResolver<
+      Maybe<ServiceConfigType>,
+      TypeParent,
+      TContext
+    >;
+
+    RollbackConfig?: RollbackConfigResolver<
+      Maybe<ServiceConfigType>,
+      TypeParent,
+      TContext
+    >;
+
+    EndpointSpec?: EndpointSpecResolver<
+      Maybe<ServiceEndpointSpecType>,
+      TypeParent,
+      TContext
+    >;
   }
 
   export type NameResolver<
     R = string,
-    Parent = ServiceSpec,
+    Parent = ServiceSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type TaskTemplateResolver<
+    R = Maybe<ServiceTaskTemplateType>,
+    Parent = ServiceSpecType,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
   export type ModeResolver<
     R = Maybe<ServiceMode>,
-    Parent = ServiceSpec,
+    Parent = ServiceSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type UpdateConfigResolver<
+    R = Maybe<ServiceConfigType>,
+    Parent = ServiceSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type RollbackConfigResolver<
+    R = Maybe<ServiceConfigType>,
+    Parent = ServiceSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type EndpointSpecResolver<
+    R = Maybe<ServiceEndpointSpecType>,
+    Parent = ServiceSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ServiceTaskTemplateTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = ServiceTaskTemplateType
+  > {
+    ContainerSpec?: ContainerSpecResolver<
+      Maybe<ContainerSpecType>,
+      TypeParent,
+      TContext
+    >;
+
+    Resources?: ResourcesResolver<Maybe<ResourcesType>, TypeParent, TContext>;
+
+    RestartPolicy?: RestartPolicyResolver<
+      Maybe<ServiceRestartPolicyType>,
+      TypeParent,
+      TContext
+    >;
+
+    Placement?: PlacementResolver<Maybe<Json>, TypeParent, TContext>;
+
+    ForceUpdate?: ForceUpdateResolver<Maybe<number>, TypeParent, TContext>;
+  }
+
+  export type ContainerSpecResolver<
+    R = Maybe<ContainerSpecType>,
+    Parent = ServiceTaskTemplateType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ResourcesResolver<
+    R = Maybe<ResourcesType>,
+    Parent = ServiceTaskTemplateType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type RestartPolicyResolver<
+    R = Maybe<ServiceRestartPolicyType>,
+    Parent = ServiceTaskTemplateType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type PlacementResolver<
+    R = Maybe<Json>,
+    Parent = ServiceTaskTemplateType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ForceUpdateResolver<
+    R = Maybe<number>,
+    Parent = ServiceTaskTemplateType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ContainerSpecTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = ContainerSpecType
+  > {
+    Image?: ImageResolver<string, TypeParent, TContext>;
+  }
+
+  export type ImageResolver<
+    R = string,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ResourcesTypeResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = ResourcesType> {
+    Limits?: LimitsResolver<Maybe<Json>, TypeParent, TContext>;
+
+    Reservations?: ReservationsResolver<Maybe<Json>, TypeParent, TContext>;
+  }
+
+  export type LimitsResolver<
+    R = Maybe<Json>,
+    Parent = ResourcesType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ReservationsResolver<
+    R = Maybe<Json>,
+    Parent = ResourcesType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ServiceRestartPolicyTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = ServiceRestartPolicyType
+  > {
+    Condition?: ConditionResolver<string, TypeParent, TContext>;
+
+    MaxAttempt?: MaxAttemptResolver<Maybe<number>, TypeParent, TContext>;
+  }
+
+  export type ConditionResolver<
+    R = string,
+    Parent = ServiceRestartPolicyType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type MaxAttemptResolver<
+    R = Maybe<number>,
+    Parent = ServiceRestartPolicyType,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
 }
@@ -1531,6 +1802,164 @@ export namespace ServiceReplicatedResolvers {
   export type ReplicasResolver<
     R = number,
     Parent = ServiceReplicated,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ServiceConfigTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = ServiceConfigType
+  > {
+    Parallelism?: ParallelismResolver<Maybe<number>, TypeParent, TContext>;
+
+    Delay?: DelayResolver<Maybe<number>, TypeParent, TContext>;
+
+    FailureAction?: FailureActionResolver<string, TypeParent, TContext>;
+
+    Monitor?: MonitorResolver<Maybe<number>, TypeParent, TContext>;
+
+    MaxFailureRatio?: MaxFailureRatioResolver<
+      Maybe<number>,
+      TypeParent,
+      TContext
+    >;
+  }
+
+  export type ParallelismResolver<
+    R = Maybe<number>,
+    Parent = ServiceConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DelayResolver<
+    R = Maybe<number>,
+    Parent = ServiceConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type FailureActionResolver<
+    R = string,
+    Parent = ServiceConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type MonitorResolver<
+    R = Maybe<number>,
+    Parent = ServiceConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type MaxFailureRatioResolver<
+    R = Maybe<number>,
+    Parent = ServiceConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ServiceEndpointSpecTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = ServiceEndpointSpecType
+  > {
+    Mode?: ModeResolver<string, TypeParent, TContext>;
+
+    Ports?: PortsResolver<
+      Maybe<(Maybe<ServicePortType>)[]>,
+      TypeParent,
+      TContext
+    >;
+  }
+
+  export type ModeResolver<
+    R = string,
+    Parent = ServiceEndpointSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type PortsResolver<
+    R = Maybe<(Maybe<ServicePortType>)[]>,
+    Parent = ServiceEndpointSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ServicePortTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = ServicePortType
+  > {
+    Protocol?: ProtocolResolver<Maybe<string>, TypeParent, TContext>;
+
+    TargetPort?: TargetPortResolver<Maybe<number>, TypeParent, TContext>;
+
+    PublishedPort?: PublishedPortResolver<Maybe<number>, TypeParent, TContext>;
+  }
+
+  export type ProtocolResolver<
+    R = Maybe<string>,
+    Parent = ServicePortType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type TargetPortResolver<
+    R = Maybe<number>,
+    Parent = ServicePortType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type PublishedPortResolver<
+    R = Maybe<number>,
+    Parent = ServicePortType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ServiceEndpointTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = ServiceEndpointType
+  > {
+    Spec?: SpecResolver<Maybe<ServiceEndpointSpecType>, TypeParent, TContext>;
+
+    Ports?: PortsResolver<
+      Maybe<(Maybe<ServicePortType>)[]>,
+      TypeParent,
+      TContext
+    >;
+
+    VirtualIPs?: VirtualIPsResolver<
+      Maybe<(Maybe<VirtualIpType>)[]>,
+      TypeParent,
+      TContext
+    >;
+  }
+
+  export type SpecResolver<
+    R = Maybe<ServiceEndpointSpecType>,
+    Parent = ServiceEndpointType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type PortsResolver<
+    R = Maybe<(Maybe<ServicePortType>)[]>,
+    Parent = ServiceEndpointType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type VirtualIPsResolver<
+    R = Maybe<(Maybe<VirtualIpType>)[]>,
+    Parent = ServiceEndpointType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace VirtualIpTypeResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = VirtualIpType> {
+    NetworkID?: NetworkIdResolver<Maybe<string>, TypeParent, TContext>;
+
+    Addr?: AddrResolver<Maybe<string>, TypeParent, TContext>;
+  }
+
+  export type NetworkIdResolver<
+    R = Maybe<string>,
+    Parent = VirtualIpType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type AddrResolver<
+    R = Maybe<string>,
+    Parent = VirtualIpType,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
 }
@@ -1622,9 +2051,25 @@ export type IResolvers<TContext = MyContext> = {
   Secret?: SecretResolvers.Resolvers<TContext>;
   SecretSpec?: SecretSpecResolvers.Resolvers<TContext>;
   Service?: ServiceResolvers.Resolvers<TContext>;
-  ServiceSpec?: ServiceSpecResolvers.Resolvers<TContext>;
+  ServiceVersionType?: ServiceVersionTypeResolvers.Resolvers<TContext>;
+  ServiceSpecType?: ServiceSpecTypeResolvers.Resolvers<TContext>;
+  ServiceTaskTemplateType?: ServiceTaskTemplateTypeResolvers.Resolvers<
+    TContext
+  >;
+  ContainerSpecType?: ContainerSpecTypeResolvers.Resolvers<TContext>;
+  ResourcesType?: ResourcesTypeResolvers.Resolvers<TContext>;
+  ServiceRestartPolicyType?: ServiceRestartPolicyTypeResolvers.Resolvers<
+    TContext
+  >;
   ServiceMode?: ServiceModeResolvers.Resolvers<TContext>;
   ServiceReplicated?: ServiceReplicatedResolvers.Resolvers<TContext>;
+  ServiceConfigType?: ServiceConfigTypeResolvers.Resolvers<TContext>;
+  ServiceEndpointSpecType?: ServiceEndpointSpecTypeResolvers.Resolvers<
+    TContext
+  >;
+  ServicePortType?: ServicePortTypeResolvers.Resolvers<TContext>;
+  ServiceEndpointType?: ServiceEndpointTypeResolvers.Resolvers<TContext>;
+  VirtualIpType?: VirtualIpTypeResolvers.Resolvers<TContext>;
   Task?: TaskResolvers.Resolvers<TContext>;
   Json?: GraphQLScalarType;
 } & { [typeName: string]: never };
