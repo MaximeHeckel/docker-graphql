@@ -22,6 +22,10 @@ export interface Query {
   services: Service[];
 
   service: Service;
+
+  tasks: Task[];
+
+  task: TaskInspect;
 }
 
 export interface ContainerList {
@@ -391,7 +395,7 @@ export interface ServiceEndpointType {
 }
 
 export interface VirtualIpType {
-  NetworkID?: Maybe<string>;
+  NetworkID: string;
 
   Addr?: Maybe<string>;
 }
@@ -399,11 +403,77 @@ export interface VirtualIpType {
 export interface Task {
   ID: string;
 
-  NodeID: string;
+  Version?: Maybe<ServiceVersionType>;
+
+  CreatedAt?: Maybe<string>;
+
+  UpdatedAt?: Maybe<string>;
+
+  Spec?: Maybe<TaskSpecType>;
 
   ServiceID: string;
 
+  Slot?: Maybe<number>;
+
+  NodeID: string;
+
+  Status?: Maybe<TaskStatusType>;
+
   DesiredState: string;
+
+  NetworksAttachments?: Maybe<(Maybe<Json>)[]>;
+}
+
+export interface TaskSpecType {
+  ContainerSpec?: Maybe<ContainerSpecType>;
+
+  Resources?: Maybe<ResourcesType>;
+
+  RestartPolicy?: Maybe<ServiceRestartPolicyType>;
+
+  Placement?: Maybe<Json>;
+}
+
+export interface TaskStatusType {
+  Timestamp: string;
+
+  State: string;
+
+  Message: string;
+
+  ContainerStatus?: Maybe<ContainerStatusType>;
+}
+
+export interface ContainerStatusType {
+  ContainerID?: Maybe<string>;
+
+  PID?: Maybe<number>;
+}
+
+export interface TaskInspect {
+  ID: string;
+
+  Version?: Maybe<ServiceVersionType>;
+
+  CreatedAt?: Maybe<string>;
+
+  UpdatedAt?: Maybe<string>;
+
+  Spec?: Maybe<TaskSpecType>;
+
+  ServiceID: string;
+
+  Slot?: Maybe<number>;
+
+  NodeID: string;
+
+  Status?: Maybe<TaskStatusType>;
+
+  DesiredState: string;
+
+  NetworksAttachments?: Maybe<(Maybe<Json>)[]>;
+
+  AssignedGenericResources?: Maybe<(Maybe<Json>)[]>;
 }
 
 // ====================================================
@@ -417,6 +487,9 @@ export interface SecretQueryArgs {
   id: string;
 }
 export interface ServiceQueryArgs {
+  id: string;
+}
+export interface TaskQueryArgs {
   id: string;
 }
 
@@ -490,6 +563,10 @@ export namespace QueryResolvers {
     services?: ServicesResolver<Service[], TypeParent, TContext>;
 
     service?: ServiceResolver<Service, TypeParent, TContext>;
+
+    tasks?: TasksResolver<Task[], TypeParent, TContext>;
+
+    task?: TaskResolver<TaskInspect, TypeParent, TContext>;
   }
 
   export type ContainersResolver<
@@ -531,6 +608,20 @@ export namespace QueryResolvers {
     TContext = MyContext
   > = Resolver<R, Parent, TContext, ServiceArgs>;
   export interface ServiceArgs {
+    id: string;
+  }
+
+  export type TasksResolver<
+    R = Task[],
+    Parent = {},
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type TaskResolver<
+    R = TaskInspect,
+    Parent = {},
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext, TaskArgs>;
+  export interface TaskArgs {
     id: string;
   }
 }
@@ -1947,13 +2038,13 @@ export namespace ServiceEndpointTypeResolvers {
 
 export namespace VirtualIpTypeResolvers {
   export interface Resolvers<TContext = MyContext, TypeParent = VirtualIpType> {
-    NetworkID?: NetworkIdResolver<Maybe<string>, TypeParent, TContext>;
+    NetworkID?: NetworkIdResolver<string, TypeParent, TContext>;
 
     Addr?: AddrResolver<Maybe<string>, TypeParent, TContext>;
   }
 
   export type NetworkIdResolver<
-    R = Maybe<string>,
+    R = string,
     Parent = VirtualIpType,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
@@ -1968,11 +2059,29 @@ export namespace TaskResolvers {
   export interface Resolvers<TContext = MyContext, TypeParent = Task> {
     ID?: IdResolver<string, TypeParent, TContext>;
 
-    NodeID?: NodeIdResolver<string, TypeParent, TContext>;
+    Version?: VersionResolver<Maybe<ServiceVersionType>, TypeParent, TContext>;
+
+    CreatedAt?: CreatedAtResolver<Maybe<string>, TypeParent, TContext>;
+
+    UpdatedAt?: UpdatedAtResolver<Maybe<string>, TypeParent, TContext>;
+
+    Spec?: SpecResolver<Maybe<TaskSpecType>, TypeParent, TContext>;
 
     ServiceID?: ServiceIdResolver<string, TypeParent, TContext>;
 
+    Slot?: SlotResolver<Maybe<number>, TypeParent, TContext>;
+
+    NodeID?: NodeIdResolver<string, TypeParent, TContext>;
+
+    Status?: StatusResolver<Maybe<TaskStatusType>, TypeParent, TContext>;
+
     DesiredState?: DesiredStateResolver<string, TypeParent, TContext>;
+
+    NetworksAttachments?: NetworksAttachmentsResolver<
+      Maybe<(Maybe<Json>)[]>,
+      TypeParent,
+      TContext
+    >;
   }
 
   export type IdResolver<
@@ -1980,8 +2089,23 @@ export namespace TaskResolvers {
     Parent = Task,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
-  export type NodeIdResolver<
-    R = string,
+  export type VersionResolver<
+    R = Maybe<ServiceVersionType>,
+    Parent = Task,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CreatedAtResolver<
+    R = Maybe<string>,
+    Parent = Task,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type UpdatedAtResolver<
+    R = Maybe<string>,
+    Parent = Task,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SpecResolver<
+    R = Maybe<TaskSpecType>,
     Parent = Task,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
@@ -1990,9 +2114,229 @@ export namespace TaskResolvers {
     Parent = Task,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
+  export type SlotResolver<
+    R = Maybe<number>,
+    Parent = Task,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type NodeIdResolver<
+    R = string,
+    Parent = Task,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type StatusResolver<
+    R = Maybe<TaskStatusType>,
+    Parent = Task,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
   export type DesiredStateResolver<
     R = string,
     Parent = Task,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type NetworksAttachmentsResolver<
+    R = Maybe<(Maybe<Json>)[]>,
+    Parent = Task,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace TaskSpecTypeResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = TaskSpecType> {
+    ContainerSpec?: ContainerSpecResolver<
+      Maybe<ContainerSpecType>,
+      TypeParent,
+      TContext
+    >;
+
+    Resources?: ResourcesResolver<Maybe<ResourcesType>, TypeParent, TContext>;
+
+    RestartPolicy?: RestartPolicyResolver<
+      Maybe<ServiceRestartPolicyType>,
+      TypeParent,
+      TContext
+    >;
+
+    Placement?: PlacementResolver<Maybe<Json>, TypeParent, TContext>;
+  }
+
+  export type ContainerSpecResolver<
+    R = Maybe<ContainerSpecType>,
+    Parent = TaskSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ResourcesResolver<
+    R = Maybe<ResourcesType>,
+    Parent = TaskSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type RestartPolicyResolver<
+    R = Maybe<ServiceRestartPolicyType>,
+    Parent = TaskSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type PlacementResolver<
+    R = Maybe<Json>,
+    Parent = TaskSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace TaskStatusTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = TaskStatusType
+  > {
+    Timestamp?: TimestampResolver<string, TypeParent, TContext>;
+
+    State?: StateResolver<string, TypeParent, TContext>;
+
+    Message?: MessageResolver<string, TypeParent, TContext>;
+
+    ContainerStatus?: ContainerStatusResolver<
+      Maybe<ContainerStatusType>,
+      TypeParent,
+      TContext
+    >;
+  }
+
+  export type TimestampResolver<
+    R = string,
+    Parent = TaskStatusType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type StateResolver<
+    R = string,
+    Parent = TaskStatusType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type MessageResolver<
+    R = string,
+    Parent = TaskStatusType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ContainerStatusResolver<
+    R = Maybe<ContainerStatusType>,
+    Parent = TaskStatusType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ContainerStatusTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = ContainerStatusType
+  > {
+    ContainerID?: ContainerIdResolver<Maybe<string>, TypeParent, TContext>;
+
+    PID?: PidResolver<Maybe<number>, TypeParent, TContext>;
+  }
+
+  export type ContainerIdResolver<
+    R = Maybe<string>,
+    Parent = ContainerStatusType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type PidResolver<
+    R = Maybe<number>,
+    Parent = ContainerStatusType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace TaskInspectResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = TaskInspect> {
+    ID?: IdResolver<string, TypeParent, TContext>;
+
+    Version?: VersionResolver<Maybe<ServiceVersionType>, TypeParent, TContext>;
+
+    CreatedAt?: CreatedAtResolver<Maybe<string>, TypeParent, TContext>;
+
+    UpdatedAt?: UpdatedAtResolver<Maybe<string>, TypeParent, TContext>;
+
+    Spec?: SpecResolver<Maybe<TaskSpecType>, TypeParent, TContext>;
+
+    ServiceID?: ServiceIdResolver<string, TypeParent, TContext>;
+
+    Slot?: SlotResolver<Maybe<number>, TypeParent, TContext>;
+
+    NodeID?: NodeIdResolver<string, TypeParent, TContext>;
+
+    Status?: StatusResolver<Maybe<TaskStatusType>, TypeParent, TContext>;
+
+    DesiredState?: DesiredStateResolver<string, TypeParent, TContext>;
+
+    NetworksAttachments?: NetworksAttachmentsResolver<
+      Maybe<(Maybe<Json>)[]>,
+      TypeParent,
+      TContext
+    >;
+
+    AssignedGenericResources?: AssignedGenericResourcesResolver<
+      Maybe<(Maybe<Json>)[]>,
+      TypeParent,
+      TContext
+    >;
+  }
+
+  export type IdResolver<
+    R = string,
+    Parent = TaskInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type VersionResolver<
+    R = Maybe<ServiceVersionType>,
+    Parent = TaskInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CreatedAtResolver<
+    R = Maybe<string>,
+    Parent = TaskInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type UpdatedAtResolver<
+    R = Maybe<string>,
+    Parent = TaskInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SpecResolver<
+    R = Maybe<TaskSpecType>,
+    Parent = TaskInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ServiceIdResolver<
+    R = string,
+    Parent = TaskInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SlotResolver<
+    R = Maybe<number>,
+    Parent = TaskInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type NodeIdResolver<
+    R = string,
+    Parent = TaskInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type StatusResolver<
+    R = Maybe<TaskStatusType>,
+    Parent = TaskInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DesiredStateResolver<
+    R = string,
+    Parent = TaskInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type NetworksAttachmentsResolver<
+    R = Maybe<(Maybe<Json>)[]>,
+    Parent = TaskInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type AssignedGenericResourcesResolver<
+    R = Maybe<(Maybe<Json>)[]>,
+    Parent = TaskInspect,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
 }
@@ -2071,6 +2415,10 @@ export type IResolvers<TContext = MyContext> = {
   ServiceEndpointType?: ServiceEndpointTypeResolvers.Resolvers<TContext>;
   VirtualIpType?: VirtualIpTypeResolvers.Resolvers<TContext>;
   Task?: TaskResolvers.Resolvers<TContext>;
+  TaskSpecType?: TaskSpecTypeResolvers.Resolvers<TContext>;
+  TaskStatusType?: TaskStatusTypeResolvers.Resolvers<TContext>;
+  ContainerStatusType?: ContainerStatusTypeResolvers.Resolvers<TContext>;
+  TaskInspect?: TaskInspectResolvers.Resolvers<TContext>;
   Json?: GraphQLScalarType;
 } & { [typeName: string]: never };
 

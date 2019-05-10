@@ -4,6 +4,8 @@ const typeDefs = gql`
   extend type Query {
     services: [Service!]!
     service(id: ID!): Service!
+    tasks: [Task!]!
+    task(id: ID!): TaskInspect!
   }
 
   type ServiceVersionType {
@@ -64,7 +66,7 @@ const typeDefs = gql`
   }
 
   type VirtualIPType {
-    NetworkID: String
+    NetworkID: ID!
     Addr: String
   }
 
@@ -91,11 +93,52 @@ const typeDefs = gql`
     tasks: [Task!]!
   }
 
+  type TaskSpecType {
+    ContainerSpec: ContainerSpecType
+    Resources: ResourcesType
+    RestartPolicy: ServiceRestartPolicyType
+    Placement: JSON
+  }
+
+  type ContainerStatusType {
+    ContainerID: ID
+    PID: Int
+  }
+
+  type TaskStatusType {
+    Timestamp: String!
+    State: String!
+    Message: String!
+    ContainerStatus: ContainerStatusType
+  }
+
+  type TaskInspect {
+    ID: ID!
+    Version: ServiceVersionType
+    CreatedAt: String
+    UpdatedAt: String
+    Spec: TaskSpecType
+    ServiceID: ID!
+    Slot: Int
+    NodeID: ID!
+    Status: TaskStatusType
+    DesiredState: String!
+    NetworksAttachments: [JSON]
+    AssignedGenericResources: [JSON]
+  }
+
   type Task {
     ID: ID!
-    NodeID: ID!
+    Version: ServiceVersionType
+    CreatedAt: String
+    UpdatedAt: String
+    Spec: TaskSpecType
     ServiceID: ID!
+    Slot: Int
+    NodeID: ID!
+    Status: TaskStatusType
     DesiredState: String!
+    NetworksAttachments: [JSON]
   }
 `;
 
