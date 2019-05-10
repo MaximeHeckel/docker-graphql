@@ -1,4 +1,5 @@
 import request from "superagent";
+import ContainerInspect from "./Container";
 
 import { QueryResolvers } from "../../../types/types";
 
@@ -16,4 +17,4 @@ const Query: QueryResolvers.Resolvers = {
   }
 };
 
-export default { Query };
+export default { Query, ContainerInspect };

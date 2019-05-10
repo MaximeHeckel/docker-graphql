@@ -143,6 +143,7 @@ const typeDefs = gql`
     RestartCount: Int
     State: ContainerStateType
     Mounts: [MountType]
+    service: Service
   }
 `;
 
