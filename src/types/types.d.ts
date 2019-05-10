@@ -1,5 +1,11 @@
 export type Maybe<T> = T | null;
 
+export enum NetworkScopeEnum {
+  Swarm = "swarm",
+  Global = "global",
+  Local = "local"
+}
+
 export type Json = any;
 
 // ====================================================
@@ -14,6 +20,10 @@ export interface Query {
   containers: ContainerList[];
 
   container: ContainerInspect;
+
+  networks: Network[];
+
+  network: NetworkInspect;
 
   secrets: Secret[];
 
@@ -276,6 +286,72 @@ export interface ContainerStateType {
   Status?: Maybe<string>;
 }
 
+export interface Network {
+  Name?: Maybe<string>;
+
+  Id: string;
+
+  Created: string;
+
+  Scope: NetworkScopeEnum;
+
+  Driver: string;
+
+  EnableIPv6?: Maybe<boolean>;
+
+  Internal?: Maybe<boolean>;
+
+  Attachable?: Maybe<boolean>;
+
+  Ingress?: Maybe<boolean>;
+
+  IPAM?: Maybe<IpamType>;
+
+  Options?: Maybe<Json>;
+}
+
+export interface IpamType {
+  Driver: string;
+
+  Config?: Maybe<(Maybe<IpamConfigType>)[]>;
+
+  Options?: Maybe<Json>;
+}
+
+export interface IpamConfigType {
+  Subnet: string;
+
+  Gateway: string;
+}
+
+export interface NetworkInspect {
+  Name?: Maybe<string>;
+
+  Id: string;
+
+  Created: string;
+
+  Scope: NetworkScopeEnum;
+
+  Driver: string;
+
+  EnableIPv6?: Maybe<boolean>;
+
+  Internal?: Maybe<boolean>;
+
+  Attachable?: Maybe<boolean>;
+
+  Ingress?: Maybe<boolean>;
+
+  IPAM?: Maybe<IpamType>;
+
+  Options?: Maybe<Json>;
+
+  Labels?: Maybe<Json>;
+
+  Containers?: Maybe<Json>;
+}
+
 export interface Secret {
   ID: string;
 
@@ -499,6 +575,9 @@ export interface TaskInspect {
 export interface ContainerQueryArgs {
   id: string;
 }
+export interface NetworkQueryArgs {
+  id: string;
+}
 export interface SecretQueryArgs {
   id: string;
 }
@@ -572,6 +651,10 @@ export namespace QueryResolvers {
 
     container?: ContainerResolver<ContainerInspect, TypeParent, TContext>;
 
+    networks?: NetworksResolver<Network[], TypeParent, TContext>;
+
+    network?: NetworkResolver<NetworkInspect, TypeParent, TContext>;
+
     secrets?: SecretsResolver<Secret[], TypeParent, TContext>;
 
     secret?: SecretResolver<Secret, TypeParent, TContext>;
@@ -596,6 +679,20 @@ export namespace QueryResolvers {
     TContext = MyContext
   > = Resolver<R, Parent, TContext, ContainerArgs>;
   export interface ContainerArgs {
+    id: string;
+  }
+
+  export type NetworksResolver<
+    R = Network[],
+    Parent = {},
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type NetworkResolver<
+    R = NetworkInspect,
+    Parent = {},
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext, NetworkArgs>;
+  export interface NetworkArgs {
     id: string;
   }
 
@@ -1591,6 +1688,239 @@ export namespace ContainerStateTypeResolvers {
   > = Resolver<R, Parent, TContext>;
 }
 
+export namespace NetworkResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = Network> {
+    Name?: NameResolver<Maybe<string>, TypeParent, TContext>;
+
+    Id?: IdResolver<string, TypeParent, TContext>;
+
+    Created?: CreatedResolver<string, TypeParent, TContext>;
+
+    Scope?: ScopeResolver<NetworkScopeEnum, TypeParent, TContext>;
+
+    Driver?: DriverResolver<string, TypeParent, TContext>;
+
+    EnableIPv6?: EnableIPv6Resolver<Maybe<boolean>, TypeParent, TContext>;
+
+    Internal?: InternalResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    Attachable?: AttachableResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    Ingress?: IngressResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    IPAM?: IpamResolver<Maybe<IpamType>, TypeParent, TContext>;
+
+    Options?: OptionsResolver<Maybe<Json>, TypeParent, TContext>;
+  }
+
+  export type NameResolver<
+    R = Maybe<string>,
+    Parent = Network,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type IdResolver<
+    R = string,
+    Parent = Network,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CreatedResolver<
+    R = string,
+    Parent = Network,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ScopeResolver<
+    R = NetworkScopeEnum,
+    Parent = Network,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DriverResolver<
+    R = string,
+    Parent = Network,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type EnableIPv6Resolver<
+    R = Maybe<boolean>,
+    Parent = Network,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type InternalResolver<
+    R = Maybe<boolean>,
+    Parent = Network,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type AttachableResolver<
+    R = Maybe<boolean>,
+    Parent = Network,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type IngressResolver<
+    R = Maybe<boolean>,
+    Parent = Network,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type IpamResolver<
+    R = Maybe<IpamType>,
+    Parent = Network,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type OptionsResolver<
+    R = Maybe<Json>,
+    Parent = Network,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace IpamTypeResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = IpamType> {
+    Driver?: DriverResolver<string, TypeParent, TContext>;
+
+    Config?: ConfigResolver<
+      Maybe<(Maybe<IpamConfigType>)[]>,
+      TypeParent,
+      TContext
+    >;
+
+    Options?: OptionsResolver<Maybe<Json>, TypeParent, TContext>;
+  }
+
+  export type DriverResolver<
+    R = string,
+    Parent = IpamType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ConfigResolver<
+    R = Maybe<(Maybe<IpamConfigType>)[]>,
+    Parent = IpamType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type OptionsResolver<
+    R = Maybe<Json>,
+    Parent = IpamType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace IpamConfigTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = IpamConfigType
+  > {
+    Subnet?: SubnetResolver<string, TypeParent, TContext>;
+
+    Gateway?: GatewayResolver<string, TypeParent, TContext>;
+  }
+
+  export type SubnetResolver<
+    R = string,
+    Parent = IpamConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type GatewayResolver<
+    R = string,
+    Parent = IpamConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace NetworkInspectResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = NetworkInspect
+  > {
+    Name?: NameResolver<Maybe<string>, TypeParent, TContext>;
+
+    Id?: IdResolver<string, TypeParent, TContext>;
+
+    Created?: CreatedResolver<string, TypeParent, TContext>;
+
+    Scope?: ScopeResolver<NetworkScopeEnum, TypeParent, TContext>;
+
+    Driver?: DriverResolver<string, TypeParent, TContext>;
+
+    EnableIPv6?: EnableIPv6Resolver<Maybe<boolean>, TypeParent, TContext>;
+
+    Internal?: InternalResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    Attachable?: AttachableResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    Ingress?: IngressResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    IPAM?: IpamResolver<Maybe<IpamType>, TypeParent, TContext>;
+
+    Options?: OptionsResolver<Maybe<Json>, TypeParent, TContext>;
+
+    Labels?: LabelsResolver<Maybe<Json>, TypeParent, TContext>;
+
+    Containers?: ContainersResolver<Maybe<Json>, TypeParent, TContext>;
+  }
+
+  export type NameResolver<
+    R = Maybe<string>,
+    Parent = NetworkInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type IdResolver<
+    R = string,
+    Parent = NetworkInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CreatedResolver<
+    R = string,
+    Parent = NetworkInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ScopeResolver<
+    R = NetworkScopeEnum,
+    Parent = NetworkInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DriverResolver<
+    R = string,
+    Parent = NetworkInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type EnableIPv6Resolver<
+    R = Maybe<boolean>,
+    Parent = NetworkInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type InternalResolver<
+    R = Maybe<boolean>,
+    Parent = NetworkInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type AttachableResolver<
+    R = Maybe<boolean>,
+    Parent = NetworkInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type IngressResolver<
+    R = Maybe<boolean>,
+    Parent = NetworkInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type IpamResolver<
+    R = Maybe<IpamType>,
+    Parent = NetworkInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type OptionsResolver<
+    R = Maybe<Json>,
+    Parent = NetworkInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type LabelsResolver<
+    R = Maybe<Json>,
+    Parent = NetworkInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ContainersResolver<
+    R = Maybe<Json>,
+    Parent = NetworkInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
 export namespace SecretResolvers {
   export interface Resolvers<TContext = MyContext, TypeParent = Secret> {
     ID?: IdResolver<string, TypeParent, TContext>;
@@ -2462,6 +2792,10 @@ export type IResolvers<TContext = MyContext> = {
   >;
   RestartPolicyType?: RestartPolicyTypeResolvers.Resolvers<TContext>;
   ContainerStateType?: ContainerStateTypeResolvers.Resolvers<TContext>;
+  Network?: NetworkResolvers.Resolvers<TContext>;
+  IpamType?: IpamTypeResolvers.Resolvers<TContext>;
+  IpamConfigType?: IpamConfigTypeResolvers.Resolvers<TContext>;
+  NetworkInspect?: NetworkInspectResolvers.Resolvers<TContext>;
   Secret?: SecretResolvers.Resolvers<TContext>;
   VersionType?: VersionTypeResolvers.Resolvers<TContext>;
   SecretSpec?: SecretSpecResolvers.Resolvers<TContext>;
