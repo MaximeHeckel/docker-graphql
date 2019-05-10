@@ -279,17 +279,37 @@ export interface ContainerStateType {
 export interface Secret {
   ID: string;
 
+  Version?: Maybe<VersionType>;
+
+  CreatedAt: string;
+
+  UpdatedAt: string;
+
   Spec?: Maybe<SecretSpec>;
+}
+
+export interface VersionType {
+  Index?: Maybe<number>;
 }
 
 export interface SecretSpec {
   Name: string;
+
+  Labels?: Maybe<Json>;
+
+  Driver?: Maybe<SecretDriverType>;
+}
+
+export interface SecretDriverType {
+  Name: string;
+
+  Options?: Maybe<Json>;
 }
 
 export interface Service {
   ID: string;
 
-  Version?: Maybe<ServiceVersionType>;
+  Version?: Maybe<VersionType>;
 
   CreatedAt: string;
 
@@ -304,10 +324,6 @@ export interface Service {
   secrets: Secret[];
 
   tasks: Task[];
-}
-
-export interface ServiceVersionType {
-  Index?: Maybe<number>;
 }
 
 export interface ServiceSpecType {
@@ -403,7 +419,7 @@ export interface VirtualIpType {
 export interface Task {
   ID: string;
 
-  Version?: Maybe<ServiceVersionType>;
+  Version?: Maybe<VersionType>;
 
   CreatedAt?: Maybe<string>;
 
@@ -453,7 +469,7 @@ export interface ContainerStatusType {
 export interface TaskInspect {
   ID: string;
 
-  Version?: Maybe<ServiceVersionType>;
+  Version?: Maybe<VersionType>;
 
   CreatedAt?: Maybe<string>;
 
@@ -1579,10 +1595,31 @@ export namespace SecretResolvers {
   export interface Resolvers<TContext = MyContext, TypeParent = Secret> {
     ID?: IdResolver<string, TypeParent, TContext>;
 
+    Version?: VersionResolver<Maybe<VersionType>, TypeParent, TContext>;
+
+    CreatedAt?: CreatedAtResolver<string, TypeParent, TContext>;
+
+    UpdatedAt?: UpdatedAtResolver<string, TypeParent, TContext>;
+
     Spec?: SpecResolver<Maybe<SecretSpec>, TypeParent, TContext>;
   }
 
   export type IdResolver<
+    R = string,
+    Parent = Secret,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type VersionResolver<
+    R = Maybe<VersionType>,
+    Parent = Secret,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CreatedAtResolver<
+    R = string,
+    Parent = Secret,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type UpdatedAtResolver<
     R = string,
     Parent = Secret,
     TContext = MyContext
@@ -1594,14 +1631,62 @@ export namespace SecretResolvers {
   > = Resolver<R, Parent, TContext>;
 }
 
+export namespace VersionTypeResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = VersionType> {
+    Index?: IndexResolver<Maybe<number>, TypeParent, TContext>;
+  }
+
+  export type IndexResolver<
+    R = Maybe<number>,
+    Parent = VersionType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
 export namespace SecretSpecResolvers {
   export interface Resolvers<TContext = MyContext, TypeParent = SecretSpec> {
     Name?: NameResolver<string, TypeParent, TContext>;
+
+    Labels?: LabelsResolver<Maybe<Json>, TypeParent, TContext>;
+
+    Driver?: DriverResolver<Maybe<SecretDriverType>, TypeParent, TContext>;
   }
 
   export type NameResolver<
     R = string,
     Parent = SecretSpec,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type LabelsResolver<
+    R = Maybe<Json>,
+    Parent = SecretSpec,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DriverResolver<
+    R = Maybe<SecretDriverType>,
+    Parent = SecretSpec,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace SecretDriverTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = SecretDriverType
+  > {
+    Name?: NameResolver<string, TypeParent, TContext>;
+
+    Options?: OptionsResolver<Maybe<Json>, TypeParent, TContext>;
+  }
+
+  export type NameResolver<
+    R = string,
+    Parent = SecretDriverType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type OptionsResolver<
+    R = Maybe<Json>,
+    Parent = SecretDriverType,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
 }
@@ -1610,7 +1695,7 @@ export namespace ServiceResolvers {
   export interface Resolvers<TContext = MyContext, TypeParent = Service> {
     ID?: IdResolver<string, TypeParent, TContext>;
 
-    Version?: VersionResolver<Maybe<ServiceVersionType>, TypeParent, TContext>;
+    Version?: VersionResolver<Maybe<VersionType>, TypeParent, TContext>;
 
     CreatedAt?: CreatedAtResolver<string, TypeParent, TContext>;
 
@@ -1637,7 +1722,7 @@ export namespace ServiceResolvers {
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
   export type VersionResolver<
-    R = Maybe<ServiceVersionType>,
+    R = Maybe<VersionType>,
     Parent = Service,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
@@ -1674,21 +1759,6 @@ export namespace ServiceResolvers {
   export type TasksResolver<
     R = Task[],
     Parent = Service,
-    TContext = MyContext
-  > = Resolver<R, Parent, TContext>;
-}
-
-export namespace ServiceVersionTypeResolvers {
-  export interface Resolvers<
-    TContext = MyContext,
-    TypeParent = ServiceVersionType
-  > {
-    Index?: IndexResolver<Maybe<number>, TypeParent, TContext>;
-  }
-
-  export type IndexResolver<
-    R = Maybe<number>,
-    Parent = ServiceVersionType,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
 }
@@ -2059,7 +2129,7 @@ export namespace TaskResolvers {
   export interface Resolvers<TContext = MyContext, TypeParent = Task> {
     ID?: IdResolver<string, TypeParent, TContext>;
 
-    Version?: VersionResolver<Maybe<ServiceVersionType>, TypeParent, TContext>;
+    Version?: VersionResolver<Maybe<VersionType>, TypeParent, TContext>;
 
     CreatedAt?: CreatedAtResolver<Maybe<string>, TypeParent, TContext>;
 
@@ -2090,7 +2160,7 @@ export namespace TaskResolvers {
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
   export type VersionResolver<
-    R = Maybe<ServiceVersionType>,
+    R = Maybe<VersionType>,
     Parent = Task,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
@@ -2248,7 +2318,7 @@ export namespace TaskInspectResolvers {
   export interface Resolvers<TContext = MyContext, TypeParent = TaskInspect> {
     ID?: IdResolver<string, TypeParent, TContext>;
 
-    Version?: VersionResolver<Maybe<ServiceVersionType>, TypeParent, TContext>;
+    Version?: VersionResolver<Maybe<VersionType>, TypeParent, TContext>;
 
     CreatedAt?: CreatedAtResolver<Maybe<string>, TypeParent, TContext>;
 
@@ -2285,7 +2355,7 @@ export namespace TaskInspectResolvers {
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
   export type VersionResolver<
-    R = Maybe<ServiceVersionType>,
+    R = Maybe<VersionType>,
     Parent = TaskInspect,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
@@ -2393,9 +2463,10 @@ export type IResolvers<TContext = MyContext> = {
   RestartPolicyType?: RestartPolicyTypeResolvers.Resolvers<TContext>;
   ContainerStateType?: ContainerStateTypeResolvers.Resolvers<TContext>;
   Secret?: SecretResolvers.Resolvers<TContext>;
+  VersionType?: VersionTypeResolvers.Resolvers<TContext>;
   SecretSpec?: SecretSpecResolvers.Resolvers<TContext>;
+  SecretDriverType?: SecretDriverTypeResolvers.Resolvers<TContext>;
   Service?: ServiceResolvers.Resolvers<TContext>;
-  ServiceVersionType?: ServiceVersionTypeResolvers.Resolvers<TContext>;
   ServiceSpecType?: ServiceSpecTypeResolvers.Resolvers<TContext>;
   ServiceTaskTemplateType?: ServiceTaskTemplateTypeResolvers.Resolvers<
     TContext

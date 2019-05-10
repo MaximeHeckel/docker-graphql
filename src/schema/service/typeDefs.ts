@@ -8,7 +8,7 @@ const typeDefs = gql`
     task(id: ID!): TaskInspect!
   }
 
-  type ServiceVersionType {
+  type VersionType {
     Index: Int
   }
 
@@ -83,7 +83,7 @@ const typeDefs = gql`
 
   type Service {
     ID: ID!
-    Version: ServiceVersionType
+    Version: VersionType
     CreatedAt: String!
     UpdatedAt: String!
     Spec: ServiceSpecType!
@@ -114,7 +114,7 @@ const typeDefs = gql`
 
   type TaskInspect {
     ID: ID!
-    Version: ServiceVersionType
+    Version: VersionType
     CreatedAt: String
     UpdatedAt: String
     Spec: TaskSpecType
@@ -129,7 +129,7 @@ const typeDefs = gql`
 
   type Task {
     ID: ID!
-    Version: ServiceVersionType
+    Version: VersionType
     CreatedAt: String
     UpdatedAt: String
     Spec: TaskSpecType

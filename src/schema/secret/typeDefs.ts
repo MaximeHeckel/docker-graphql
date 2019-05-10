@@ -6,13 +6,23 @@ const typeDefs = gql`
     secret(id: ID!): Secret!
   }
 
-  type Secret {
-    ID: ID!
-    Spec: SecretSpec
+  type SecretDriverType {
+    Name: String!
+    Options: JSON
   }
 
   type SecretSpec {
     Name: String!
+    Labels: JSON
+    Driver: SecretDriverType
+  }
+
+  type Secret {
+    ID: ID!
+    Version: VersionType
+    CreatedAt: String!
+    UpdatedAt: String!
+    Spec: SecretSpec
   }
 `;
 
