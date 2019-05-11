@@ -3,7 +3,8 @@ import container from "./container/resolvers";
 import network from "./network/resolvers";
 import secret from "./secret/resolvers";
 import service from "./service/resolvers";
+import volume from "./volume/resolvers";
 
-const resolvers = merge(container, network, secret, service);
+const resolvers = merge(container, network, secret, service, volume);
 
 export default resolvers;

@@ -6,6 +6,11 @@ export enum NetworkScopeEnum {
   Local = "local"
 }
 
+export enum VolumeScope {
+  Local = "local",
+  Global = "global"
+}
+
 export type Json = any;
 
 // ====================================================
@@ -36,6 +41,10 @@ export interface Query {
   tasks: Task[];
 
   task: TaskInspect;
+
+  volumes: Volume[];
+
+  volume?: Maybe<VolumeInspect>;
 }
 
 export interface ContainerList {
@@ -570,6 +579,44 @@ export interface TaskInspect {
   AssignedGenericResources?: Maybe<(Maybe<Json>)[]>;
 }
 
+export interface Volume {
+  CreatedAt: string;
+
+  Name: string;
+
+  Driver: string;
+
+  Mountpoint: string;
+
+  Labels?: Maybe<Json>;
+
+  Scope: VolumeScope;
+
+  Options?: Maybe<VolumeOptions>;
+}
+
+export interface VolumeOptions {
+  device: string;
+
+  o: string;
+
+  type: string;
+}
+
+export interface VolumeInspect {
+  Name: string;
+
+  Driver: string;
+
+  Mountpoint: string;
+
+  Status?: Maybe<Json>;
+
+  Labels?: Maybe<Json>;
+
+  Scope?: Maybe<VolumeScope>;
+}
+
 // ====================================================
 // Arguments
 // ====================================================
@@ -588,6 +635,9 @@ export interface ServiceQueryArgs {
 }
 export interface TaskQueryArgs {
   id: string;
+}
+export interface VolumeQueryArgs {
+  name: string;
 }
 
 import {
@@ -668,6 +718,10 @@ export namespace QueryResolvers {
     tasks?: TasksResolver<Task[], TypeParent, TContext>;
 
     task?: TaskResolver<TaskInspect, TypeParent, TContext>;
+
+    volumes?: VolumesResolver<Volume[], TypeParent, TContext>;
+
+    volume?: VolumeResolver<Maybe<VolumeInspect>, TypeParent, TContext>;
   }
 
   export type ContainersResolver<
@@ -738,6 +792,20 @@ export namespace QueryResolvers {
   > = Resolver<R, Parent, TContext, TaskArgs>;
   export interface TaskArgs {
     id: string;
+  }
+
+  export type VolumesResolver<
+    R = Volume[],
+    Parent = {},
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type VolumeResolver<
+    R = Maybe<VolumeInspect>,
+    Parent = {},
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext, VolumeArgs>;
+  export interface VolumeArgs {
+    name: string;
   }
 }
 
@@ -2750,6 +2818,133 @@ export namespace TaskInspectResolvers {
   > = Resolver<R, Parent, TContext>;
 }
 
+export namespace VolumeResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = Volume> {
+    CreatedAt?: CreatedAtResolver<string, TypeParent, TContext>;
+
+    Name?: NameResolver<string, TypeParent, TContext>;
+
+    Driver?: DriverResolver<string, TypeParent, TContext>;
+
+    Mountpoint?: MountpointResolver<string, TypeParent, TContext>;
+
+    Labels?: LabelsResolver<Maybe<Json>, TypeParent, TContext>;
+
+    Scope?: ScopeResolver<VolumeScope, TypeParent, TContext>;
+
+    Options?: OptionsResolver<Maybe<VolumeOptions>, TypeParent, TContext>;
+  }
+
+  export type CreatedAtResolver<
+    R = string,
+    Parent = Volume,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type NameResolver<
+    R = string,
+    Parent = Volume,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DriverResolver<
+    R = string,
+    Parent = Volume,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type MountpointResolver<
+    R = string,
+    Parent = Volume,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type LabelsResolver<
+    R = Maybe<Json>,
+    Parent = Volume,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ScopeResolver<
+    R = VolumeScope,
+    Parent = Volume,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type OptionsResolver<
+    R = Maybe<VolumeOptions>,
+    Parent = Volume,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace VolumeOptionsResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = VolumeOptions> {
+    device?: DeviceResolver<string, TypeParent, TContext>;
+
+    o?: OResolver<string, TypeParent, TContext>;
+
+    type?: TypeResolver<string, TypeParent, TContext>;
+  }
+
+  export type DeviceResolver<
+    R = string,
+    Parent = VolumeOptions,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type OResolver<
+    R = string,
+    Parent = VolumeOptions,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type TypeResolver<
+    R = string,
+    Parent = VolumeOptions,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace VolumeInspectResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = VolumeInspect> {
+    Name?: NameResolver<string, TypeParent, TContext>;
+
+    Driver?: DriverResolver<string, TypeParent, TContext>;
+
+    Mountpoint?: MountpointResolver<string, TypeParent, TContext>;
+
+    Status?: StatusResolver<Maybe<Json>, TypeParent, TContext>;
+
+    Labels?: LabelsResolver<Maybe<Json>, TypeParent, TContext>;
+
+    Scope?: ScopeResolver<Maybe<VolumeScope>, TypeParent, TContext>;
+  }
+
+  export type NameResolver<
+    R = string,
+    Parent = VolumeInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DriverResolver<
+    R = string,
+    Parent = VolumeInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type MountpointResolver<
+    R = string,
+    Parent = VolumeInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type StatusResolver<
+    R = Maybe<Json>,
+    Parent = VolumeInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type LabelsResolver<
+    R = Maybe<Json>,
+    Parent = VolumeInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ScopeResolver<
+    R = Maybe<VolumeScope>,
+    Parent = VolumeInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
 /** Directs the executor to skip this field or fragment when the `if` argument is true. */
 export type SkipDirectiveResolver<Result> = DirectiveResolverFn<
   Result,
@@ -2833,6 +3028,9 @@ export type IResolvers<TContext = MyContext> = {
   IpamConfigType?: IpamConfigTypeResolvers.Resolvers<TContext>;
   NetworkInspect?: NetworkInspectResolvers.Resolvers<TContext>;
   TaskInspect?: TaskInspectResolvers.Resolvers<TContext>;
+  Volume?: VolumeResolvers.Resolvers<TContext>;
+  VolumeOptions?: VolumeOptionsResolvers.Resolvers<TContext>;
+  VolumeInspect?: VolumeInspectResolvers.Resolvers<TContext>;
   Json?: GraphQLScalarType;
 } & { [typeName: string]: never };
 
