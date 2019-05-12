@@ -1,5 +1,25 @@
 export type Maybe<T> = T | null;
 
+export enum IsolationType {
+  Default = "default",
+  Process = "process",
+  Hyperv = "hyperv"
+}
+
+export enum MountTypeEnum {
+  Volume = "volume",
+  Bind = "bind",
+  Tmpfs = "tmpfs"
+}
+
+export enum BindMountPropagationType {
+  Private = "private",
+  Rprivate = "rprivate",
+  Shared = "shared",
+  Rshared = "rshared",
+  Slave = "slave"
+}
+
 export enum NetworkScopeEnum {
   Swarm = "swarm",
   Global = "global",
@@ -349,6 +369,118 @@ export interface ServiceTaskTemplateType {
 
 export interface ContainerSpecType {
   Image: string;
+
+  Init?: Maybe<boolean>;
+
+  Isolation?: Maybe<IsolationType>;
+
+  Labels?: Maybe<Json>;
+
+  Command?: Maybe<string>;
+
+  Args?: Maybe<string>;
+
+  Hostname?: Maybe<string>;
+
+  Env?: Maybe<(Maybe<string>)[]>;
+
+  Dir?: Maybe<string>;
+
+  User?: Maybe<string>;
+
+  Groups?: Maybe<(Maybe<string>)[]>;
+
+  Mounts?: Maybe<ServiceMountType[]>;
+
+  TTY?: Maybe<boolean>;
+
+  OpenStdin?: Maybe<boolean>;
+
+  ReadOnly?: Maybe<boolean>;
+
+  StopSignal?: Maybe<string>;
+
+  StopGracePeriod?: Maybe<number>;
+
+  HealthCheck?: Maybe<HealthCheckType>;
+
+  Hosts?: Maybe<(Maybe<string>)[]>;
+
+  DNSConfig?: Maybe<DnsConfigType>;
+
+  Secrets?: Maybe<(Maybe<ContainerSpecSecretType>)[]>;
+
+  Configs?: Maybe<(Maybe<ContainerSpecConfigType>)[]>;
+}
+
+export interface ServiceMountType {
+  Type?: Maybe<MountTypeEnum>;
+
+  Source?: Maybe<string>;
+
+  Target?: Maybe<string>;
+
+  ReadOnly?: Maybe<boolean>;
+
+  BindOptions?: Maybe<BindOptionsType>;
+
+  VolumeOptions?: Maybe<VolumeOptionsType>;
+
+  TmpfsOptions?: Maybe<TmpfsOptionsType>;
+}
+
+export interface BindOptionsType {
+  Propagation?: Maybe<BindMountPropagationType>;
+}
+
+export interface VolumeOptionsType {
+  NoCopy?: Maybe<boolean>;
+
+  Labels?: Maybe<Json>;
+
+  DriverConfig?: Maybe<Json>;
+}
+
+export interface TmpfsOptionsType {
+  Mode?: Maybe<number>;
+
+  SizeBytes?: Maybe<number>;
+}
+
+export interface HealthCheckType {
+  Test?: Maybe<(Maybe<string>)[]>;
+
+  Interval?: Maybe<number>;
+
+  Timeout?: Maybe<number>;
+
+  Retries?: Maybe<number>;
+
+  StartPeriod?: Maybe<number>;
+}
+
+export interface DnsConfigType {
+  Nameservers?: Maybe<(Maybe<string>)[]>;
+
+  Search?: Maybe<(Maybe<string>)[]>;
+
+  Options?: Maybe<(Maybe<string>)[]>;
+}
+
+export interface ContainerSpecSecretType {
+  File?: Maybe<Json>;
+
+  SecretID: string;
+
+  SecretName: string;
+}
+
+export interface ContainerSpecConfigType {
+  File?: Maybe<Json>;
+
+  ConfigID: string;
+
+  ConfigName: string;
 }
 
 export interface ResourcesType {
@@ -358,9 +490,13 @@ export interface ResourcesType {
 }
 
 export interface ServiceRestartPolicyType {
+  Delay?: Maybe<number>;
+
   Condition: string;
 
-  MaxAttempt?: Maybe<number>;
+  MaxAttempt: number;
+
+  Window: number;
 }
 
 export interface ServiceMode {
@@ -615,6 +751,12 @@ export interface VolumeInspect {
   Labels?: Maybe<Json>;
 
   Scope?: Maybe<VolumeScope>;
+}
+
+export interface Privileges {
+  CredentialSpec?: Maybe<Json>;
+
+  SELinuxContext?: Maybe<Json>;
 }
 
 // ====================================================
@@ -1972,11 +2114,444 @@ export namespace ContainerSpecTypeResolvers {
     TypeParent = ContainerSpecType
   > {
     Image?: ImageResolver<string, TypeParent, TContext>;
+
+    Init?: InitResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    Isolation?: IsolationResolver<Maybe<IsolationType>, TypeParent, TContext>;
+
+    Labels?: LabelsResolver<Maybe<Json>, TypeParent, TContext>;
+
+    Command?: CommandResolver<Maybe<string>, TypeParent, TContext>;
+
+    Args?: ArgsResolver<Maybe<string>, TypeParent, TContext>;
+
+    Hostname?: HostnameResolver<Maybe<string>, TypeParent, TContext>;
+
+    Env?: EnvResolver<Maybe<(Maybe<string>)[]>, TypeParent, TContext>;
+
+    Dir?: DirResolver<Maybe<string>, TypeParent, TContext>;
+
+    User?: UserResolver<Maybe<string>, TypeParent, TContext>;
+
+    Groups?: GroupsResolver<Maybe<(Maybe<string>)[]>, TypeParent, TContext>;
+
+    Mounts?: MountsResolver<Maybe<ServiceMountType[]>, TypeParent, TContext>;
+
+    TTY?: TtyResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    OpenStdin?: OpenStdinResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    ReadOnly?: ReadOnlyResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    StopSignal?: StopSignalResolver<Maybe<string>, TypeParent, TContext>;
+
+    StopGracePeriod?: StopGracePeriodResolver<
+      Maybe<number>,
+      TypeParent,
+      TContext
+    >;
+
+    HealthCheck?: HealthCheckResolver<
+      Maybe<HealthCheckType>,
+      TypeParent,
+      TContext
+    >;
+
+    Hosts?: HostsResolver<Maybe<(Maybe<string>)[]>, TypeParent, TContext>;
+
+    DNSConfig?: DnsConfigResolver<Maybe<DnsConfigType>, TypeParent, TContext>;
+
+    Secrets?: SecretsResolver<
+      Maybe<(Maybe<ContainerSpecSecretType>)[]>,
+      TypeParent,
+      TContext
+    >;
+
+    Configs?: ConfigsResolver<
+      Maybe<(Maybe<ContainerSpecConfigType>)[]>,
+      TypeParent,
+      TContext
+    >;
   }
 
   export type ImageResolver<
     R = string,
     Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type InitResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type IsolationResolver<
+    R = Maybe<IsolationType>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type LabelsResolver<
+    R = Maybe<Json>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CommandResolver<
+    R = Maybe<string>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ArgsResolver<
+    R = Maybe<string>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type HostnameResolver<
+    R = Maybe<string>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type EnvResolver<
+    R = Maybe<(Maybe<string>)[]>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DirResolver<
+    R = Maybe<string>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type UserResolver<
+    R = Maybe<string>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type GroupsResolver<
+    R = Maybe<(Maybe<string>)[]>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type MountsResolver<
+    R = Maybe<ServiceMountType[]>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type TtyResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type OpenStdinResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ReadOnlyResolver<
+    R = Maybe<boolean>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type StopSignalResolver<
+    R = Maybe<string>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type StopGracePeriodResolver<
+    R = Maybe<number>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type HealthCheckResolver<
+    R = Maybe<HealthCheckType>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type HostsResolver<
+    R = Maybe<(Maybe<string>)[]>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DnsConfigResolver<
+    R = Maybe<DnsConfigType>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SecretsResolver<
+    R = Maybe<(Maybe<ContainerSpecSecretType>)[]>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ConfigsResolver<
+    R = Maybe<(Maybe<ContainerSpecConfigType>)[]>,
+    Parent = ContainerSpecType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ServiceMountTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = ServiceMountType
+  > {
+    Type?: TypeResolver<Maybe<MountTypeEnum>, TypeParent, TContext>;
+
+    Source?: SourceResolver<Maybe<string>, TypeParent, TContext>;
+
+    Target?: TargetResolver<Maybe<string>, TypeParent, TContext>;
+
+    ReadOnly?: ReadOnlyResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    BindOptions?: BindOptionsResolver<
+      Maybe<BindOptionsType>,
+      TypeParent,
+      TContext
+    >;
+
+    VolumeOptions?: VolumeOptionsResolver<
+      Maybe<VolumeOptionsType>,
+      TypeParent,
+      TContext
+    >;
+
+    TmpfsOptions?: TmpfsOptionsResolver<
+      Maybe<TmpfsOptionsType>,
+      TypeParent,
+      TContext
+    >;
+  }
+
+  export type TypeResolver<
+    R = Maybe<MountTypeEnum>,
+    Parent = ServiceMountType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SourceResolver<
+    R = Maybe<string>,
+    Parent = ServiceMountType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type TargetResolver<
+    R = Maybe<string>,
+    Parent = ServiceMountType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ReadOnlyResolver<
+    R = Maybe<boolean>,
+    Parent = ServiceMountType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type BindOptionsResolver<
+    R = Maybe<BindOptionsType>,
+    Parent = ServiceMountType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type VolumeOptionsResolver<
+    R = Maybe<VolumeOptionsType>,
+    Parent = ServiceMountType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type TmpfsOptionsResolver<
+    R = Maybe<TmpfsOptionsType>,
+    Parent = ServiceMountType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace BindOptionsTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = BindOptionsType
+  > {
+    Propagation?: PropagationResolver<
+      Maybe<BindMountPropagationType>,
+      TypeParent,
+      TContext
+    >;
+  }
+
+  export type PropagationResolver<
+    R = Maybe<BindMountPropagationType>,
+    Parent = BindOptionsType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace VolumeOptionsTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = VolumeOptionsType
+  > {
+    NoCopy?: NoCopyResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    Labels?: LabelsResolver<Maybe<Json>, TypeParent, TContext>;
+
+    DriverConfig?: DriverConfigResolver<Maybe<Json>, TypeParent, TContext>;
+  }
+
+  export type NoCopyResolver<
+    R = Maybe<boolean>,
+    Parent = VolumeOptionsType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type LabelsResolver<
+    R = Maybe<Json>,
+    Parent = VolumeOptionsType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DriverConfigResolver<
+    R = Maybe<Json>,
+    Parent = VolumeOptionsType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace TmpfsOptionsTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = TmpfsOptionsType
+  > {
+    Mode?: ModeResolver<Maybe<number>, TypeParent, TContext>;
+
+    SizeBytes?: SizeBytesResolver<Maybe<number>, TypeParent, TContext>;
+  }
+
+  export type ModeResolver<
+    R = Maybe<number>,
+    Parent = TmpfsOptionsType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SizeBytesResolver<
+    R = Maybe<number>,
+    Parent = TmpfsOptionsType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace HealthCheckTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = HealthCheckType
+  > {
+    Test?: TestResolver<Maybe<(Maybe<string>)[]>, TypeParent, TContext>;
+
+    Interval?: IntervalResolver<Maybe<number>, TypeParent, TContext>;
+
+    Timeout?: TimeoutResolver<Maybe<number>, TypeParent, TContext>;
+
+    Retries?: RetriesResolver<Maybe<number>, TypeParent, TContext>;
+
+    StartPeriod?: StartPeriodResolver<Maybe<number>, TypeParent, TContext>;
+  }
+
+  export type TestResolver<
+    R = Maybe<(Maybe<string>)[]>,
+    Parent = HealthCheckType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type IntervalResolver<
+    R = Maybe<number>,
+    Parent = HealthCheckType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type TimeoutResolver<
+    R = Maybe<number>,
+    Parent = HealthCheckType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type RetriesResolver<
+    R = Maybe<number>,
+    Parent = HealthCheckType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type StartPeriodResolver<
+    R = Maybe<number>,
+    Parent = HealthCheckType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace DnsConfigTypeResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = DnsConfigType> {
+    Nameservers?: NameserversResolver<
+      Maybe<(Maybe<string>)[]>,
+      TypeParent,
+      TContext
+    >;
+
+    Search?: SearchResolver<Maybe<(Maybe<string>)[]>, TypeParent, TContext>;
+
+    Options?: OptionsResolver<Maybe<(Maybe<string>)[]>, TypeParent, TContext>;
+  }
+
+  export type NameserversResolver<
+    R = Maybe<(Maybe<string>)[]>,
+    Parent = DnsConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SearchResolver<
+    R = Maybe<(Maybe<string>)[]>,
+    Parent = DnsConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type OptionsResolver<
+    R = Maybe<(Maybe<string>)[]>,
+    Parent = DnsConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ContainerSpecSecretTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = ContainerSpecSecretType
+  > {
+    File?: FileResolver<Maybe<Json>, TypeParent, TContext>;
+
+    SecretID?: SecretIdResolver<string, TypeParent, TContext>;
+
+    SecretName?: SecretNameResolver<string, TypeParent, TContext>;
+  }
+
+  export type FileResolver<
+    R = Maybe<Json>,
+    Parent = ContainerSpecSecretType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SecretIdResolver<
+    R = string,
+    Parent = ContainerSpecSecretType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SecretNameResolver<
+    R = string,
+    Parent = ContainerSpecSecretType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ContainerSpecConfigTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = ContainerSpecConfigType
+  > {
+    File?: FileResolver<Maybe<Json>, TypeParent, TContext>;
+
+    ConfigID?: ConfigIdResolver<string, TypeParent, TContext>;
+
+    ConfigName?: ConfigNameResolver<string, TypeParent, TContext>;
+  }
+
+  export type FileResolver<
+    R = Maybe<Json>,
+    Parent = ContainerSpecConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ConfigIdResolver<
+    R = string,
+    Parent = ContainerSpecConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ConfigNameResolver<
+    R = string,
+    Parent = ContainerSpecConfigType,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
 }
@@ -2005,18 +2580,32 @@ export namespace ServiceRestartPolicyTypeResolvers {
     TContext = MyContext,
     TypeParent = ServiceRestartPolicyType
   > {
+    Delay?: DelayResolver<Maybe<number>, TypeParent, TContext>;
+
     Condition?: ConditionResolver<string, TypeParent, TContext>;
 
-    MaxAttempt?: MaxAttemptResolver<Maybe<number>, TypeParent, TContext>;
+    MaxAttempt?: MaxAttemptResolver<number, TypeParent, TContext>;
+
+    Window?: WindowResolver<number, TypeParent, TContext>;
   }
 
+  export type DelayResolver<
+    R = Maybe<number>,
+    Parent = ServiceRestartPolicyType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
   export type ConditionResolver<
     R = string,
     Parent = ServiceRestartPolicyType,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
   export type MaxAttemptResolver<
-    R = Maybe<number>,
+    R = number,
+    Parent = ServiceRestartPolicyType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type WindowResolver<
+    R = number,
     Parent = ServiceRestartPolicyType,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
@@ -2945,6 +3534,25 @@ export namespace VolumeInspectResolvers {
   > = Resolver<R, Parent, TContext>;
 }
 
+export namespace PrivilegesResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = Privileges> {
+    CredentialSpec?: CredentialSpecResolver<Maybe<Json>, TypeParent, TContext>;
+
+    SELinuxContext?: SeLinuxContextResolver<Maybe<Json>, TypeParent, TContext>;
+  }
+
+  export type CredentialSpecResolver<
+    R = Maybe<Json>,
+    Parent = Privileges,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SeLinuxContextResolver<
+    R = Maybe<Json>,
+    Parent = Privileges,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
 /** Directs the executor to skip this field or fragment when the `if` argument is true. */
 export type SkipDirectiveResolver<Result> = DirectiveResolverFn<
   Result,
@@ -3003,6 +3611,18 @@ export type IResolvers<TContext = MyContext> = {
     TContext
   >;
   ContainerSpecType?: ContainerSpecTypeResolvers.Resolvers<TContext>;
+  ServiceMountType?: ServiceMountTypeResolvers.Resolvers<TContext>;
+  BindOptionsType?: BindOptionsTypeResolvers.Resolvers<TContext>;
+  VolumeOptionsType?: VolumeOptionsTypeResolvers.Resolvers<TContext>;
+  TmpfsOptionsType?: TmpfsOptionsTypeResolvers.Resolvers<TContext>;
+  HealthCheckType?: HealthCheckTypeResolvers.Resolvers<TContext>;
+  DnsConfigType?: DnsConfigTypeResolvers.Resolvers<TContext>;
+  ContainerSpecSecretType?: ContainerSpecSecretTypeResolvers.Resolvers<
+    TContext
+  >;
+  ContainerSpecConfigType?: ContainerSpecConfigTypeResolvers.Resolvers<
+    TContext
+  >;
   ResourcesType?: ResourcesTypeResolvers.Resolvers<TContext>;
   ServiceRestartPolicyType?: ServiceRestartPolicyTypeResolvers.Resolvers<
     TContext
@@ -3031,6 +3651,7 @@ export type IResolvers<TContext = MyContext> = {
   Volume?: VolumeResolvers.Resolvers<TContext>;
   VolumeOptions?: VolumeOptionsResolvers.Resolvers<TContext>;
   VolumeInspect?: VolumeInspectResolvers.Resolvers<TContext>;
+  Privileges?: PrivilegesResolvers.Resolvers<TContext>;
   Json?: GraphQLScalarType;
 } & { [typeName: string]: never };
 
