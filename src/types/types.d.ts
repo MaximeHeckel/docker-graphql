@@ -354,6 +354,8 @@ export interface Service {
 
   Endpoint?: Maybe<ServiceEndpointType>;
 
+  configs: Config[];
+
   containers: ContainerList[];
 
   secrets: Secret[];
@@ -2030,6 +2032,8 @@ export namespace ServiceResolvers {
       TContext
     >;
 
+    configs?: ConfigsResolver<Config[], TypeParent, TContext>;
+
     containers?: ContainersResolver<ContainerList[], TypeParent, TContext>;
 
     secrets?: SecretsResolver<Secret[], TypeParent, TContext>;
@@ -2064,6 +2068,11 @@ export namespace ServiceResolvers {
   > = Resolver<R, Parent, TContext>;
   export type EndpointResolver<
     R = Maybe<ServiceEndpointType>,
+    Parent = Service,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ConfigsResolver<
+    R = Config[],
     Parent = Service,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;

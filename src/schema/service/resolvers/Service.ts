@@ -3,6 +3,8 @@ import get from "lodash/get";
 import {
   ServiceResolvers,
   Secret,
+  Config,
+  ContainerSpecConfigType,
   ContainerSpecSecretType
 } from "../../../types/types";
 
@@ -29,6 +31,21 @@ const Service: ServiceResolvers.Resolvers = {
 
     const result = body.filter((secret: Secret) =>
       secretsIDs.includes(secret.ID)
+    );
+
+    return result;
+  },
+  configs: async (parent, _args, { baseURL }) => {
+    const { Spec } = parent;
+    const configs = get(Spec, "TaskTemplate.ContainerSpec.Configs", null);
+    const configsIDs = configs.map(
+      (config: ContainerSpecConfigType) => config.ConfigID
+    );
+
+    const { body } = await request.get(`${baseURL}/configs`);
+
+    const result = body.filter((config: Config) =>
+      configsIDs.includes(config.ID)
     );
 
     return result;

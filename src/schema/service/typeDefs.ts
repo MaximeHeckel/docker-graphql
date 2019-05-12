@@ -187,6 +187,7 @@ const typeDefs = gql`
     UpdatedAt: String!
     Spec: ServiceSpecType!
     Endpoint: ServiceEndpointType
+    configs: [Config!]!
     containers: [ContainerList!]!
     secrets: [Secret!]!
     tasks: [Task!]!
