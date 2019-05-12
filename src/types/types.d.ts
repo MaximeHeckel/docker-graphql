@@ -42,6 +42,10 @@ export type Json = any;
 // ====================================================
 
 export interface Query {
+  configs: Config[];
+
+  config: Config;
+
   containers: ContainerList[];
 
   container: ContainerInspect;
@@ -65,6 +69,26 @@ export interface Query {
   volumes: Volume[];
 
   volume?: Maybe<VolumeInspect>;
+}
+
+export interface Config {
+  ID: string;
+
+  Version?: Maybe<VersionType>;
+
+  CreatedAt: string;
+
+  UpdatedAt: string;
+
+  Spec?: Maybe<ConfigSpec>;
+}
+
+export interface VersionType {
+  Index?: Maybe<number>;
+}
+
+export interface ConfigSpec {
+  Name: string;
 }
 
 export interface ContainerList {
@@ -335,10 +359,6 @@ export interface Service {
   secrets: Secret[];
 
   tasks: Task[];
-}
-
-export interface VersionType {
-  Index?: Maybe<number>;
 }
 
 export interface ServiceSpecType {
@@ -763,6 +783,9 @@ export interface Privileges {
 // Arguments
 // ====================================================
 
+export interface ConfigQueryArgs {
+  id?: Maybe<string>;
+}
 export interface ContainerQueryArgs {
   id: string;
 }
@@ -841,6 +864,10 @@ export type DirectiveResolverFn<TResult, TArgs = {}, TContext = {}> = (
 
 export namespace QueryResolvers {
   export interface Resolvers<TContext = MyContext, TypeParent = {}> {
+    configs?: ConfigsResolver<Config[], TypeParent, TContext>;
+
+    config?: ConfigResolver<Config, TypeParent, TContext>;
+
     containers?: ContainersResolver<ContainerList[], TypeParent, TContext>;
 
     container?: ContainerResolver<ContainerInspect, TypeParent, TContext>;
@@ -864,6 +891,20 @@ export namespace QueryResolvers {
     volumes?: VolumesResolver<Volume[], TypeParent, TContext>;
 
     volume?: VolumeResolver<Maybe<VolumeInspect>, TypeParent, TContext>;
+  }
+
+  export type ConfigsResolver<
+    R = Config[],
+    Parent = {},
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ConfigResolver<
+    R = Config,
+    Parent = {},
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext, ConfigArgs>;
+  export interface ConfigArgs {
+    id?: Maybe<string>;
   }
 
   export type ContainersResolver<
@@ -949,6 +990,70 @@ export namespace QueryResolvers {
   export interface VolumeArgs {
     name: string;
   }
+}
+
+export namespace ConfigResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = Config> {
+    ID?: IdResolver<string, TypeParent, TContext>;
+
+    Version?: VersionResolver<Maybe<VersionType>, TypeParent, TContext>;
+
+    CreatedAt?: CreatedAtResolver<string, TypeParent, TContext>;
+
+    UpdatedAt?: UpdatedAtResolver<string, TypeParent, TContext>;
+
+    Spec?: SpecResolver<Maybe<ConfigSpec>, TypeParent, TContext>;
+  }
+
+  export type IdResolver<
+    R = string,
+    Parent = Config,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type VersionResolver<
+    R = Maybe<VersionType>,
+    Parent = Config,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CreatedAtResolver<
+    R = string,
+    Parent = Config,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type UpdatedAtResolver<
+    R = string,
+    Parent = Config,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SpecResolver<
+    R = Maybe<ConfigSpec>,
+    Parent = Config,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace VersionTypeResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = VersionType> {
+    Index?: IndexResolver<Maybe<number>, TypeParent, TContext>;
+  }
+
+  export type IndexResolver<
+    R = Maybe<number>,
+    Parent = VersionType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ConfigSpecResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = ConfigSpec> {
+    Name?: NameResolver<string, TypeParent, TContext>;
+  }
+
+  export type NameResolver<
+    R = string,
+    Parent = ConfigSpec,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
 }
 
 export namespace ContainerListResolvers {
@@ -1975,18 +2080,6 @@ export namespace ServiceResolvers {
   export type TasksResolver<
     R = Task[],
     Parent = Service,
-    TContext = MyContext
-  > = Resolver<R, Parent, TContext>;
-}
-
-export namespace VersionTypeResolvers {
-  export interface Resolvers<TContext = MyContext, TypeParent = VersionType> {
-    Index?: IndexResolver<Maybe<number>, TypeParent, TContext>;
-  }
-
-  export type IndexResolver<
-    R = Maybe<number>,
-    Parent = VersionType,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
 }
@@ -3592,6 +3685,9 @@ export interface JSONScalarConfig extends GraphQLScalarTypeConfig<Json, any> {
 
 export type IResolvers<TContext = MyContext> = {
   Query?: QueryResolvers.Resolvers<TContext>;
+  Config?: ConfigResolvers.Resolvers<TContext>;
+  VersionType?: VersionTypeResolvers.Resolvers<TContext>;
+  ConfigSpec?: ConfigSpecResolvers.Resolvers<TContext>;
   ContainerList?: ContainerListResolvers.Resolvers<TContext>;
   PortType?: PortTypeResolvers.Resolvers<TContext>;
   HostConfigType?: HostConfigTypeResolvers.Resolvers<TContext>;
@@ -3605,7 +3701,6 @@ export type IResolvers<TContext = MyContext> = {
   RestartPolicyType?: RestartPolicyTypeResolvers.Resolvers<TContext>;
   ContainerStateType?: ContainerStateTypeResolvers.Resolvers<TContext>;
   Service?: ServiceResolvers.Resolvers<TContext>;
-  VersionType?: VersionTypeResolvers.Resolvers<TContext>;
   ServiceSpecType?: ServiceSpecTypeResolvers.Resolvers<TContext>;
   ServiceTaskTemplateType?: ServiceTaskTemplateTypeResolvers.Resolvers<
     TContext
