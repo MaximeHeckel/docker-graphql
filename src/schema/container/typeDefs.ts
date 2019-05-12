@@ -51,9 +51,9 @@ const typeDefs = gql`
     Domainname: String
     Env: [String]
     Hostname: String!
-    Image: String!
+    Image: ID!
     Labels: JSON
-    MaxAddress: String
+    MacAddress: String
     NetworkDisabled: Boolean
     OpenStdin: Boolean
     StdinOnce: Boolean

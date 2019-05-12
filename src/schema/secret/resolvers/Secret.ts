@@ -8,11 +8,9 @@ const Secret: SecretResolvers.Resolvers = {
     const filters = {
       secret: [ID]
     };
-    console.log(JSON.stringify(filters));
     const queryParams = qs.stringify({
       filters: JSON.stringify(filters)
     });
-    console.log(queryParams);
     const { body } = await request.get(
       `${baseURL}/services?filters=${encodeURI(JSON.stringify(filters))}`
     );

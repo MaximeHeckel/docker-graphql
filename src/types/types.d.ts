@@ -50,6 +50,10 @@ export interface Query {
 
   container: ContainerInspect;
 
+  images: Image[];
+
+  image: ImageInspect;
+
   networks: Network[];
 
   network: NetworkInspect;
@@ -220,7 +224,7 @@ export interface ContainerConfigType {
 
   Labels?: Maybe<Json>;
 
-  MaxAddress?: Maybe<string>;
+  MacAddress?: Maybe<string>;
 
   NetworkDisabled?: Maybe<boolean>;
 
@@ -645,6 +649,114 @@ export interface ContainerStatusType {
   PID?: Maybe<number>;
 }
 
+export interface Image {
+  Id: string;
+
+  ParentId?: Maybe<string>;
+
+  RepoTags?: Maybe<(Maybe<string>)[]>;
+
+  RepoDigests?: Maybe<(Maybe<string>)[]>;
+
+  Created: number;
+
+  Size: number;
+
+  VirtualSize: number;
+
+  SharedSize?: Maybe<number>;
+
+  Labels?: Maybe<Json>;
+
+  Containers?: Maybe<number>;
+}
+
+export interface ImageInspect {
+  Id: string;
+
+  Container?: Maybe<string>;
+
+  Comment?: Maybe<string>;
+
+  OS?: Maybe<string>;
+
+  Architecture?: Maybe<string>;
+
+  Parent?: Maybe<string>;
+
+  ContainerConfig?: Maybe<ContainerConfigType>;
+
+  DockerVersion: string;
+
+  VirtualSize: number;
+
+  Size: number;
+
+  Author?: Maybe<string>;
+
+  Created: string;
+
+  GraphDriver?: Maybe<GraphDriverType>;
+
+  RepoDigests?: Maybe<(Maybe<string>)[]>;
+
+  RepoTags?: Maybe<(Maybe<string>)[]>;
+
+  Config?: Maybe<ImageConfigType>;
+
+  RootFS?: Maybe<RootFsType>;
+}
+
+export interface GraphDriverType {
+  Name?: Maybe<string>;
+
+  Data?: Maybe<Json>;
+}
+
+export interface ImageConfigType {
+  Image: string;
+
+  NetworkDisabled?: Maybe<boolean>;
+
+  OnBuild: (Maybe<string>)[];
+
+  StdinOnce?: Maybe<boolean>;
+
+  PublishService?: Maybe<string>;
+
+  AttachStdin?: Maybe<boolean>;
+
+  OpenStdin?: Maybe<boolean>;
+
+  Domainname?: Maybe<string>;
+
+  AttachStdout?: Maybe<boolean>;
+
+  Tty?: Maybe<boolean>;
+
+  Hostname: string;
+
+  Cmd?: Maybe<(Maybe<string>)[]>;
+
+  Env?: Maybe<(Maybe<string>)[]>;
+
+  Labels?: Maybe<Json>;
+
+  MacAddress?: Maybe<string>;
+
+  AttachStderr?: Maybe<boolean>;
+
+  WorkingDir?: Maybe<string>;
+
+  User?: Maybe<string>;
+}
+
+export interface RootFsType {
+  Type?: Maybe<string>;
+
+  Layers: string[];
+}
+
 export interface Network {
   Name?: Maybe<string>;
 
@@ -791,6 +903,9 @@ export interface ConfigQueryArgs {
 export interface ContainerQueryArgs {
   id: string;
 }
+export interface ImageQueryArgs {
+  name: string;
+}
 export interface NetworkQueryArgs {
   id: string;
 }
@@ -874,6 +989,10 @@ export namespace QueryResolvers {
 
     container?: ContainerResolver<ContainerInspect, TypeParent, TContext>;
 
+    images?: ImagesResolver<Image[], TypeParent, TContext>;
+
+    image?: ImageResolver<ImageInspect, TypeParent, TContext>;
+
     networks?: NetworksResolver<Network[], TypeParent, TContext>;
 
     network?: NetworkResolver<NetworkInspect, TypeParent, TContext>;
@@ -921,6 +1040,20 @@ export namespace QueryResolvers {
   > = Resolver<R, Parent, TContext, ContainerArgs>;
   export interface ContainerArgs {
     id: string;
+  }
+
+  export type ImagesResolver<
+    R = Image[],
+    Parent = {},
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ImageResolver<
+    R = ImageInspect,
+    Parent = {},
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext, ImageArgs>;
+  export interface ImageArgs {
+    name: string;
   }
 
   export type NetworksResolver<
@@ -1483,7 +1616,7 @@ export namespace ContainerConfigTypeResolvers {
 
     Labels?: LabelsResolver<Maybe<Json>, TypeParent, TContext>;
 
-    MaxAddress?: MaxAddressResolver<Maybe<string>, TypeParent, TContext>;
+    MacAddress?: MacAddressResolver<Maybe<string>, TypeParent, TContext>;
 
     NetworkDisabled?: NetworkDisabledResolver<
       Maybe<boolean>,
@@ -1553,7 +1686,7 @@ export namespace ContainerConfigTypeResolvers {
     Parent = ContainerConfigType,
     TContext = MyContext
   > = Resolver<R, Parent, TContext>;
-  export type MaxAddressResolver<
+  export type MacAddressResolver<
     R = Maybe<string>,
     Parent = ContainerConfigType,
     TContext = MyContext
@@ -3179,6 +3312,404 @@ export namespace ContainerStatusTypeResolvers {
   > = Resolver<R, Parent, TContext>;
 }
 
+export namespace ImageResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = Image> {
+    Id?: IdResolver<string, TypeParent, TContext>;
+
+    ParentId?: ParentIdResolver<Maybe<string>, TypeParent, TContext>;
+
+    RepoTags?: RepoTagsResolver<Maybe<(Maybe<string>)[]>, TypeParent, TContext>;
+
+    RepoDigests?: RepoDigestsResolver<
+      Maybe<(Maybe<string>)[]>,
+      TypeParent,
+      TContext
+    >;
+
+    Created?: CreatedResolver<number, TypeParent, TContext>;
+
+    Size?: SizeResolver<number, TypeParent, TContext>;
+
+    VirtualSize?: VirtualSizeResolver<number, TypeParent, TContext>;
+
+    SharedSize?: SharedSizeResolver<Maybe<number>, TypeParent, TContext>;
+
+    Labels?: LabelsResolver<Maybe<Json>, TypeParent, TContext>;
+
+    Containers?: ContainersResolver<Maybe<number>, TypeParent, TContext>;
+  }
+
+  export type IdResolver<
+    R = string,
+    Parent = Image,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ParentIdResolver<
+    R = Maybe<string>,
+    Parent = Image,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type RepoTagsResolver<
+    R = Maybe<(Maybe<string>)[]>,
+    Parent = Image,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type RepoDigestsResolver<
+    R = Maybe<(Maybe<string>)[]>,
+    Parent = Image,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CreatedResolver<
+    R = number,
+    Parent = Image,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SizeResolver<
+    R = number,
+    Parent = Image,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type VirtualSizeResolver<
+    R = number,
+    Parent = Image,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SharedSizeResolver<
+    R = Maybe<number>,
+    Parent = Image,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type LabelsResolver<
+    R = Maybe<Json>,
+    Parent = Image,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ContainersResolver<
+    R = Maybe<number>,
+    Parent = Image,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ImageInspectResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = ImageInspect> {
+    Id?: IdResolver<string, TypeParent, TContext>;
+
+    Container?: ContainerResolver<Maybe<string>, TypeParent, TContext>;
+
+    Comment?: CommentResolver<Maybe<string>, TypeParent, TContext>;
+
+    OS?: OsResolver<Maybe<string>, TypeParent, TContext>;
+
+    Architecture?: ArchitectureResolver<Maybe<string>, TypeParent, TContext>;
+
+    Parent?: ParentResolver<Maybe<string>, TypeParent, TContext>;
+
+    ContainerConfig?: ContainerConfigResolver<
+      Maybe<ContainerConfigType>,
+      TypeParent,
+      TContext
+    >;
+
+    DockerVersion?: DockerVersionResolver<string, TypeParent, TContext>;
+
+    VirtualSize?: VirtualSizeResolver<number, TypeParent, TContext>;
+
+    Size?: SizeResolver<number, TypeParent, TContext>;
+
+    Author?: AuthorResolver<Maybe<string>, TypeParent, TContext>;
+
+    Created?: CreatedResolver<string, TypeParent, TContext>;
+
+    GraphDriver?: GraphDriverResolver<
+      Maybe<GraphDriverType>,
+      TypeParent,
+      TContext
+    >;
+
+    RepoDigests?: RepoDigestsResolver<
+      Maybe<(Maybe<string>)[]>,
+      TypeParent,
+      TContext
+    >;
+
+    RepoTags?: RepoTagsResolver<Maybe<(Maybe<string>)[]>, TypeParent, TContext>;
+
+    Config?: ConfigResolver<Maybe<ImageConfigType>, TypeParent, TContext>;
+
+    RootFS?: RootFsResolver<Maybe<RootFsType>, TypeParent, TContext>;
+  }
+
+  export type IdResolver<
+    R = string,
+    Parent = ImageInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ContainerResolver<
+    R = Maybe<string>,
+    Parent = ImageInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CommentResolver<
+    R = Maybe<string>,
+    Parent = ImageInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type OsResolver<
+    R = Maybe<string>,
+    Parent = ImageInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ArchitectureResolver<
+    R = Maybe<string>,
+    Parent = ImageInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ParentResolver<
+    R = Maybe<string>,
+    Parent = ImageInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ContainerConfigResolver<
+    R = Maybe<ContainerConfigType>,
+    Parent = ImageInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DockerVersionResolver<
+    R = string,
+    Parent = ImageInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type VirtualSizeResolver<
+    R = number,
+    Parent = ImageInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SizeResolver<
+    R = number,
+    Parent = ImageInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type AuthorResolver<
+    R = Maybe<string>,
+    Parent = ImageInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CreatedResolver<
+    R = string,
+    Parent = ImageInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type GraphDriverResolver<
+    R = Maybe<GraphDriverType>,
+    Parent = ImageInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type RepoDigestsResolver<
+    R = Maybe<(Maybe<string>)[]>,
+    Parent = ImageInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type RepoTagsResolver<
+    R = Maybe<(Maybe<string>)[]>,
+    Parent = ImageInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ConfigResolver<
+    R = Maybe<ImageConfigType>,
+    Parent = ImageInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type RootFsResolver<
+    R = Maybe<RootFsType>,
+    Parent = ImageInspect,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace GraphDriverTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = GraphDriverType
+  > {
+    Name?: NameResolver<Maybe<string>, TypeParent, TContext>;
+
+    Data?: DataResolver<Maybe<Json>, TypeParent, TContext>;
+  }
+
+  export type NameResolver<
+    R = Maybe<string>,
+    Parent = GraphDriverType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DataResolver<
+    R = Maybe<Json>,
+    Parent = GraphDriverType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace ImageConfigTypeResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = ImageConfigType
+  > {
+    Image?: ImageResolver<string, TypeParent, TContext>;
+
+    NetworkDisabled?: NetworkDisabledResolver<
+      Maybe<boolean>,
+      TypeParent,
+      TContext
+    >;
+
+    OnBuild?: OnBuildResolver<(Maybe<string>)[], TypeParent, TContext>;
+
+    StdinOnce?: StdinOnceResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    PublishService?: PublishServiceResolver<
+      Maybe<string>,
+      TypeParent,
+      TContext
+    >;
+
+    AttachStdin?: AttachStdinResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    OpenStdin?: OpenStdinResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    Domainname?: DomainnameResolver<Maybe<string>, TypeParent, TContext>;
+
+    AttachStdout?: AttachStdoutResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    Tty?: TtyResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    Hostname?: HostnameResolver<string, TypeParent, TContext>;
+
+    Cmd?: CmdResolver<Maybe<(Maybe<string>)[]>, TypeParent, TContext>;
+
+    Env?: EnvResolver<Maybe<(Maybe<string>)[]>, TypeParent, TContext>;
+
+    Labels?: LabelsResolver<Maybe<Json>, TypeParent, TContext>;
+
+    MacAddress?: MacAddressResolver<Maybe<string>, TypeParent, TContext>;
+
+    AttachStderr?: AttachStderrResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    WorkingDir?: WorkingDirResolver<Maybe<string>, TypeParent, TContext>;
+
+    User?: UserResolver<Maybe<string>, TypeParent, TContext>;
+  }
+
+  export type ImageResolver<
+    R = string,
+    Parent = ImageConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type NetworkDisabledResolver<
+    R = Maybe<boolean>,
+    Parent = ImageConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type OnBuildResolver<
+    R = (Maybe<string>)[],
+    Parent = ImageConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type StdinOnceResolver<
+    R = Maybe<boolean>,
+    Parent = ImageConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type PublishServiceResolver<
+    R = Maybe<string>,
+    Parent = ImageConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type AttachStdinResolver<
+    R = Maybe<boolean>,
+    Parent = ImageConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type OpenStdinResolver<
+    R = Maybe<boolean>,
+    Parent = ImageConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DomainnameResolver<
+    R = Maybe<string>,
+    Parent = ImageConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type AttachStdoutResolver<
+    R = Maybe<boolean>,
+    Parent = ImageConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type TtyResolver<
+    R = Maybe<boolean>,
+    Parent = ImageConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type HostnameResolver<
+    R = string,
+    Parent = ImageConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CmdResolver<
+    R = Maybe<(Maybe<string>)[]>,
+    Parent = ImageConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type EnvResolver<
+    R = Maybe<(Maybe<string>)[]>,
+    Parent = ImageConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type LabelsResolver<
+    R = Maybe<Json>,
+    Parent = ImageConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type MacAddressResolver<
+    R = Maybe<string>,
+    Parent = ImageConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type AttachStderrResolver<
+    R = Maybe<boolean>,
+    Parent = ImageConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type WorkingDirResolver<
+    R = Maybe<string>,
+    Parent = ImageConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type UserResolver<
+    R = Maybe<string>,
+    Parent = ImageConfigType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace RootFsTypeResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = RootFsType> {
+    Type?: TypeResolver<Maybe<string>, TypeParent, TContext>;
+
+    Layers?: LayersResolver<string[], TypeParent, TContext>;
+  }
+
+  export type TypeResolver<
+    R = Maybe<string>,
+    Parent = RootFsType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type LayersResolver<
+    R = string[],
+    Parent = RootFsType,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
 export namespace NetworkResolvers {
   export interface Resolvers<TContext = MyContext, TypeParent = Network> {
     Name?: NameResolver<Maybe<string>, TypeParent, TContext>;
@@ -3747,6 +4278,11 @@ export type IResolvers<TContext = MyContext> = {
   TaskSpecType?: TaskSpecTypeResolvers.Resolvers<TContext>;
   TaskStatusType?: TaskStatusTypeResolvers.Resolvers<TContext>;
   ContainerStatusType?: ContainerStatusTypeResolvers.Resolvers<TContext>;
+  Image?: ImageResolvers.Resolvers<TContext>;
+  ImageInspect?: ImageInspectResolvers.Resolvers<TContext>;
+  GraphDriverType?: GraphDriverTypeResolvers.Resolvers<TContext>;
+  ImageConfigType?: ImageConfigTypeResolvers.Resolvers<TContext>;
+  RootFsType?: RootFsTypeResolvers.Resolvers<TContext>;
   Network?: NetworkResolvers.Resolvers<TContext>;
   IpamType?: IpamTypeResolvers.Resolvers<TContext>;
   IpamConfigType?: IpamConfigTypeResolvers.Resolvers<TContext>;
