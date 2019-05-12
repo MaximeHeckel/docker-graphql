@@ -1,6 +1,10 @@
 import request from "superagent";
-
-import { ServiceResolvers } from "../../../types/types";
+import get from "lodash/get";
+import {
+  ServiceResolvers,
+  Secret,
+  ContainerSpecSecretType
+} from "../../../types/types";
 
 const Service: ServiceResolvers.Resolvers = {
   containers: async (parent, _args, { baseURL }) => {
@@ -15,17 +19,19 @@ const Service: ServiceResolvers.Resolvers = {
     return body;
   },
   secrets: async (parent, _args, { baseURL }) => {
-    const { ID } = parent;
-    const filters = {
-      service: {
-        [ID]: true
-      }
-    };
-    const { body } = await request.get(
-      `${baseURL}/secrets?filters=${encodeURI(JSON.stringify(filters))}`
+    const { Spec } = parent;
+    const secrets = get(Spec, "TaskTemplate.ContainerSpec.Secrets", null);
+    const secretsIDs = secrets.map(
+      (secret: ContainerSpecSecretType) => secret.SecretID
     );
 
-    return body;
+    const { body } = await request.get(`${baseURL}/secrets`);
+
+    const result = body.filter((secret: Secret) =>
+      secretsIDs.includes(secret.ID)
+    );
+
+    return result;
   },
   tasks: async (parent, _args, { baseURL }) => {
     const { ID } = parent;
