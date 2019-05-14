@@ -26,13 +26,13 @@ All the constants in this project are defined in `src/constants.ts`.
 
 ## Generating types from schema
 
-This project relies on [graphql-code-generator](https://github.com/dotansimha/graphql-code-generator) to generate types from the schema. To generate the types run `yarn generate` or `npm run generate`
+This project relies on [graphql-code-generator](https://github.com/dotansimha/graphql-code-generator) to generate types from the schema. To generate the types run `yarn generate` or `npm run generate`.
 
 # Roadmap
 
-- [x] add all Docker types in schema
-- [x] implement resolvers for main Docker types
-- [ ] ability to query related resources (i.e. query containers within a service etc) (IN PROGRESS)
+- [x] Add all Docker types in schema
+- [x] Implement resolvers for main Docker types
+- [ ] Ability to query related resources (i.e. query containers within a service etc) (IN PROGRESS)
 - [ ] Fully type the server (IN PROGRESS)
 - [ ] Support for filters in query based on the API spec
 - [ ] Write tests (I still need to figure out what is the proper way / strategy to test this server)

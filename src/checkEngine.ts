@@ -7,7 +7,7 @@ const checkEngine = baseURL => {
       .get(`${baseURL}/version`)
       .then(res => {
         const { body } = res;
-        console.info(chalk.green(`Docker Engine Detected.`));
+        console.info(chalk.green(`Docker Engine detected.`));
         console.info(`\n`);
         console.info(`Version: ${chalk.blue(body.Version)}`);
         console.info(`API Version: ${chalk.blue(body.ApiVersion)}`);
