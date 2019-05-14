@@ -10,8 +10,8 @@ const checkEngine = baseURL => {
         console.info(chalk.green(`Docker Engine Detected.`));
         console.info(`\n`);
         console.info(`Version: ${chalk.blue(body.Version)}`);
-        console.info(`API Version: ${chalk.blue(body.Version)}`);
-        console.info(`GitCommit:: ${chalk.blue(body.Version)}`);
+        console.info(`API Version: ${chalk.blue(body.ApiVersion)}`);
+        console.info(`GitCommit: ${chalk.blue(body.GitCommit)}`);
         console.info(`\n`);
         resolve();
       })

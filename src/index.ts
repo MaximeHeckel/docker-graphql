@@ -10,7 +10,7 @@ const config = {
   context: ({ req }) => {
     return {
       baseURL,
-      authorization: req.headers.authorization,
+      authorization: req.headers.authorization || '',
     };
   },
 };

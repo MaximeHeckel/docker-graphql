@@ -9,27 +9,31 @@ import {
 } from '../../../types/types';
 
 const Service: ServiceResolvers.Resolvers = {
-  containers: async (parent, _args, { baseURL }) => {
+  containers: async (parent, _args, { baseURL, authorization }) => {
     const { ID } = parent;
     const filters = {
       label: [`com.docker.swarm.service.id=${ID}`],
     };
-    const { body } = await request.get(
-      `${baseURL}/containers/json?filters=${encodeURI(
-        JSON.stringify(filters),
-      )}`,
-    );
+    const { body } = await request
+      .get(
+        `${baseURL}/containers/json?filters=${encodeURI(
+          JSON.stringify(filters),
+        )}`,
+      )
+      .set('Authorization', authorization);
 
     return body;
   },
-  secrets: async (parent, _args, { baseURL }) => {
+  secrets: async (parent, _args, { baseURL, authorization }) => {
     const { Spec } = parent;
     const secrets = get(Spec, 'TaskTemplate.ContainerSpec.Secrets', null);
     const secretsIDs = secrets.map(
       (secret: ContainerSpecSecretType) => secret.SecretID,
     );
 
-    const { body } = await request.get(`${baseURL}/secrets`);
+    const { body } = await request
+      .get(`${baseURL}/secrets`)
+      .set('Authorization', authorization);
 
     const result = body.filter((secret: Secret) =>
       secretsIDs.includes(secret.ID),
@@ -37,14 +41,16 @@ const Service: ServiceResolvers.Resolvers = {
 
     return result;
   },
-  configs: async (parent, _args, { baseURL }) => {
+  configs: async (parent, _args, { baseURL, authorization }) => {
     const { Spec } = parent;
     const configs = get(Spec, 'TaskTemplate.ContainerSpec.Configs', null);
     const configsIDs = configs.map(
       (config: ContainerSpecConfigType) => config.ConfigID,
     );
 
-    const { body } = await request.get(`${baseURL}/configs`);
+    const { body } = await request
+      .get(`${baseURL}/configs`)
+      .set('Authorization', authorization);
 
     const result = body.filter((config: Config) =>
       configsIDs.includes(config.ID),
@@ -52,7 +58,7 @@ const Service: ServiceResolvers.Resolvers = {
 
     return result;
   },
-  tasks: async (parent, _args, { baseURL }) => {
+  tasks: async (parent, _args, { baseURL, authorization }) => {
     const { ID } = parent;
     const filters = {
       service: {

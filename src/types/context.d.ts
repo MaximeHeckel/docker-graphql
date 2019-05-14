@@ -1,4 +1,4 @@
 export type MyContext = {
-  authorization: String;
-  baseURL: String;
+  authorization: string;
+  baseURL: string;
 };

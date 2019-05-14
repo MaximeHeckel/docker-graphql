@@ -3,16 +3,18 @@ import ContainerInspect from './Container';
 
 import { QueryResolvers } from '../../../types/types';
 
-const baseURL = 'http+unix://%2Fvar%2Frun%2Fdocker.sock';
-
 const Query: QueryResolvers.Resolvers = {
-  containers: async (_parent, _args) => {
-    const { body } = await request.get(`${baseURL}/containers/json`);
+  containers: async (_parent, _args, { baseURL, authorization }) => {
+    const { body } = await request
+      .get(`${baseURL}/containers/json`)
+      .set('Authorization', authorization);
     return body;
   },
-  container: async (_parent, args) => {
+  container: async (_parent, args, { baseURL, authorization }) => {
     const { id } = args;
-    const { body } = await request.get(`${baseURL}/containers/${id}/json`);
+    const { body } = await request
+      .get(`${baseURL}/containers/${id}/json`)
+      .set('Authorization', authorization);
     return body;
   },
 };
