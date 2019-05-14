@@ -1,6 +1,6 @@
-import request from "superagent";
+import request from 'superagent';
 
-import { QueryResolvers } from "../../../types/types";
+import { QueryResolvers } from '../../../types/types';
 
 const Query: QueryResolvers.Resolvers = {
   configs: async (_parent, _args, { baseURL }) => {
@@ -11,7 +11,7 @@ const Query: QueryResolvers.Resolvers = {
     const { id } = args;
     const { body } = await request.get(`${baseURL}/configs/${id}`);
     return body;
-  }
+  },
 };
 
 export default { Query };

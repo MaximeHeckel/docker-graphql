@@ -1,5 +1,5 @@
-import chalk from "chalk";
-import request from "superagent";
+import chalk from 'chalk';
+import request from 'superagent';
 
 const checkEngine = baseURL => {
   return new Promise((resolve, reject) => {
@@ -16,12 +16,12 @@ const checkEngine = baseURL => {
         resolve();
       })
       .catch(() => {
-        console.info(chalk.red("Error: Docker Engine is not running."));
+        console.info(chalk.red('Error: Docker Engine is not running.'));
         console.info(`\n`);
         console.info(
           chalk.white(
-            "Please start Docker on your machine or use a valid value for the BASE_URL environment variable."
-          )
+            'Please start Docker on your machine or use a valid value for the BASE_URL environment variable.',
+          ),
         );
         console.info(`\n`);
         reject();

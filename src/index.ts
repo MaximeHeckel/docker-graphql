@@ -1,8 +1,8 @@
-import { baseURL, port } from "./constants";
-import checkEngine from "./checkEngine";
-import schema from "./schema";
-import server from "./server";
-import request from "superagent";
+import { baseURL, port } from './constants';
+import checkEngine from './checkEngine';
+import schema from './schema';
+import server from './server';
+import request from 'superagent';
 
 const config = {
   port,
@@ -10,9 +10,9 @@ const config = {
   context: ({ req }) => {
     return {
       baseURL,
-      authorization: req.headers.authorization
+      authorization: req.headers.authorization,
     };
-  }
+  },
 };
 
 checkEngine(baseURL)

@@ -1,63 +1,63 @@
 export type Maybe<T> = T | null;
 
 export enum IsolationType {
-  Default = "default",
-  Process = "process",
-  Hyperv = "hyperv"
+  Default = 'default',
+  Process = 'process',
+  Hyperv = 'hyperv',
 }
 
 export enum MountTypeEnum {
-  Volume = "volume",
-  Bind = "bind",
-  Tmpfs = "tmpfs"
+  Volume = 'volume',
+  Bind = 'bind',
+  Tmpfs = 'tmpfs',
 }
 
 export enum BindMountPropagationType {
-  Private = "private",
-  Rprivate = "rprivate",
-  Shared = "shared",
-  Rshared = "rshared",
-  Slave = "slave"
+  Private = 'private',
+  Rprivate = 'rprivate',
+  Shared = 'shared',
+  Rshared = 'rshared',
+  Slave = 'slave',
 }
 
 export enum NetworkScopeEnum {
-  Swarm = "swarm",
-  Global = "global",
-  Local = "local"
+  Swarm = 'swarm',
+  Global = 'global',
+  Local = 'local',
 }
 
 export enum AvailabilityEnum {
-  Active = "active",
-  Pause = "pause",
-  Drain = "drain"
+  Active = 'active',
+  Pause = 'pause',
+  Drain = 'drain',
 }
 
 export enum RoleEnum {
-  Manager = "manager",
-  Worker = "worker"
+  Manager = 'manager',
+  Worker = 'worker',
 }
 
 export enum OsEnum {
-  Linux = "linux",
-  Windows = "windows"
+  Linux = 'linux',
+  Windows = 'windows',
 }
 
 export enum StateEnum {
-  Unknown = "unknown",
-  Down = "down",
-  Ready = "ready",
-  Disconnected = "disconnected"
+  Unknown = 'unknown',
+  Down = 'down',
+  Ready = 'ready',
+  Disconnected = 'disconnected',
 }
 
 export enum ReachabilityEnum {
-  Unknown = "unknown",
-  Unreachable = "unreachable",
-  Reachable = "reachable"
+  Unknown = 'unknown',
+  Unreachable = 'unreachable',
+  Reachable = 'reachable',
 }
 
 export enum VolumeScope {
-  Local = "local",
-  Global = "global"
+  Local = 'local',
+  Global = 'global',
 }
 
 export type Json = any;
@@ -1053,16 +1053,16 @@ export interface VolumeQueryArgs {
 import {
   GraphQLResolveInfo,
   GraphQLScalarType,
-  GraphQLScalarTypeConfig
-} from "graphql";
+  GraphQLScalarTypeConfig,
+} from 'graphql';
 
-import { MyContext } from "./context";
+import { MyContext } from './context';
 
 export type Resolver<Result, Parent = {}, TContext = {}, Args = {}> = (
   parent: Parent,
   args: Args,
   context: TContext,
-  info: GraphQLResolveInfo
+  info: GraphQLResolveInfo,
 ) => Promise<Result> | Result;
 
 export interface ISubscriptionResolverObject<Result, Parent, TContext, Args> {
@@ -1070,13 +1070,13 @@ export interface ISubscriptionResolverObject<Result, Parent, TContext, Args> {
     parent: P,
     args: Args,
     context: TContext,
-    info: GraphQLResolveInfo
+    info: GraphQLResolveInfo,
   ): AsyncIterator<R | Result> | Promise<AsyncIterator<R | Result>>;
   resolve?<R = Result, P = Parent>(
     parent: P,
     args: Args,
     context: TContext,
-    info: GraphQLResolveInfo
+    info: GraphQLResolveInfo,
   ): R | Result | Promise<R | Result>;
 }
 
@@ -1094,7 +1094,7 @@ export type SubscriptionResolver<
 export type TypeResolveFn<Types, Parent = {}, TContext = {}> = (
   parent: Parent,
   context: TContext,
-  info: GraphQLResolveInfo
+  info: GraphQLResolveInfo,
 ) => Maybe<Types>;
 
 export type NextResolverFn<T> = () => Promise<T>;
@@ -1104,7 +1104,7 @@ export type DirectiveResolverFn<TResult, TArgs = {}, TContext = {}> = (
   source: any,
   args: TArgs,
   context: TContext,
-  info: GraphQLResolveInfo
+  info: GraphQLResolveInfo,
 ) => TResult | Promise<TResult>;
 
 export namespace QueryResolvers {
@@ -4694,7 +4694,7 @@ export interface DeprecatedDirectiveArgs {
 }
 
 export interface JSONScalarConfig extends GraphQLScalarTypeConfig<Json, any> {
-  name: "JSON";
+  name: 'JSON';
 }
 
 export type IResolvers<TContext = MyContext> = {

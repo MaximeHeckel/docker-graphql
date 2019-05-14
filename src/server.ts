@@ -1,9 +1,9 @@
-import { ApolloServer } from "apollo-server";
+import { ApolloServer } from 'apollo-server';
 
 const serve = ({ port, schema, context }) => {
   const server = new ApolloServer({
     schema,
-    context
+    context,
   });
 
   server.listen(port).then(({ url }) => {

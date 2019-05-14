@@ -1,7 +1,7 @@
-import request from "superagent";
-import Service from "./Service";
+import request from 'superagent';
+import Service from './Service';
 
-import { QueryResolvers } from "../../../types/types";
+import { QueryResolvers } from '../../../types/types';
 
 const Query: QueryResolvers.Resolvers = {
   services: async (_parent, _args, { baseURL }) => {
@@ -21,7 +21,7 @@ const Query: QueryResolvers.Resolvers = {
     const { id } = args;
     const { body } = await request.get(`${baseURL}/tasks/${id}`);
     return body;
-  }
+  },
 };
 
 export default { Query, Service };

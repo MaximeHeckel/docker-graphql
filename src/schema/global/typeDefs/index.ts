@@ -1,5 +1,5 @@
-import { Query } from "./entrypoint";
-import scalars from "./scalars";
+import { Query } from './entrypoint';
+import scalars from './scalars';
 
 const global = [Query, scalars];
 
