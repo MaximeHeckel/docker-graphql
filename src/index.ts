@@ -1,6 +1,8 @@
 import { baseURL, port } from "./constants";
+import checkEngine from "./checkEngine";
 import schema from "./schema";
-import serve from "./server";
+import server from "./server";
+import request from "superagent";
 
 const config = {
   port,
@@ -13,4 +15,6 @@ const config = {
   }
 };
 
-serve(config);
+checkEngine(baseURL)
+  .then(() => server(config))
+  .catch(() => process.exit(1));
