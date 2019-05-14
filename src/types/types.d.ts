@@ -26,6 +26,35 @@ export enum NetworkScopeEnum {
   Local = "local"
 }
 
+export enum AvailabilityEnum {
+  Active = "active",
+  Pause = "pause",
+  Drain = "drain"
+}
+
+export enum RoleEnum {
+  Manager = "manager",
+  Worker = "worker"
+}
+
+export enum OsEnum {
+  Linux = "linux",
+  Windows = "windows"
+}
+
+export enum StateEnum {
+  Unknown = "unknown",
+  Down = "down",
+  Ready = "ready",
+  Disconnected = "disconnected"
+}
+
+export enum ReachabilityEnum {
+  Unknown = "unknown",
+  Unreachable = "unreachable",
+  Reachable = "reachable"
+}
+
 export enum VolumeScope {
   Local = "local",
   Global = "global"
@@ -57,6 +86,10 @@ export interface Query {
   networks: Network[];
 
   network: NetworkInspect;
+
+  nodes: Node[];
+
+  node: Node;
 
   secrets: Secret[];
 
@@ -823,6 +856,98 @@ export interface NetworkInspect {
   Containers?: Maybe<Json>;
 }
 
+export interface Node {
+  ID: string;
+
+  Version?: Maybe<VersionType>;
+
+  CreatedAt: string;
+
+  UpdatedAt: string;
+
+  Spec?: Maybe<NodeSpec>;
+
+  Description?: Maybe<NodeDescription>;
+
+  Status?: Maybe<NodeStatus>;
+
+  Manager?: Maybe<NodeManagerStatus>;
+}
+
+export interface NodeSpec {
+  Availability?: Maybe<AvailabilityEnum>;
+
+  Name: string;
+
+  Role?: Maybe<RoleEnum>;
+
+  Labels?: Maybe<Json>;
+}
+
+export interface NodeDescription {
+  Hostname: string;
+
+  Platform?: Maybe<Platform>;
+
+  Resources?: Maybe<NodeResources>;
+
+  GenericResources: (Maybe<Json>)[];
+
+  Engine?: Maybe<Engine>;
+
+  TLSInfo?: Maybe<TlsInfo>;
+}
+
+export interface Platform {
+  Architecture?: Maybe<string>;
+
+  OS?: Maybe<OsEnum>;
+}
+
+export interface NodeResources {
+  NanoCPUs?: Maybe<number>;
+
+  MemoryBytes?: Maybe<number>;
+}
+
+export interface Engine {
+  EngineVersion: string;
+
+  Labels?: Maybe<Json>;
+
+  Plugins: Plugin[];
+}
+
+export interface Plugin {
+  Type?: Maybe<string>;
+
+  Name?: Maybe<string>;
+}
+
+export interface TlsInfo {
+  TrustRoot: string;
+
+  CertIssuerSubject: string;
+
+  CertIssuerPublicKey: string;
+}
+
+export interface NodeStatus {
+  State?: Maybe<StateEnum>;
+
+  Message?: Maybe<string>;
+
+  Addr?: Maybe<string>;
+}
+
+export interface NodeManagerStatus {
+  Leader?: Maybe<boolean>;
+
+  Reachability?: Maybe<ReachabilityEnum>;
+
+  Addr?: Maybe<string>;
+}
+
 export interface TaskInspect {
   ID: string;
 
@@ -908,6 +1033,9 @@ export interface ImageQueryArgs {
 }
 export interface NetworkQueryArgs {
   id: string;
+}
+export interface NodeQueryArgs {
+  id?: Maybe<string>;
 }
 export interface SecretQueryArgs {
   id: string;
@@ -997,6 +1125,10 @@ export namespace QueryResolvers {
 
     network?: NetworkResolver<NetworkInspect, TypeParent, TContext>;
 
+    nodes?: NodesResolver<Node[], TypeParent, TContext>;
+
+    node?: NodeResolver<Node, TypeParent, TContext>;
+
     secrets?: SecretsResolver<Secret[], TypeParent, TContext>;
 
     secret?: SecretResolver<Secret, TypeParent, TContext>;
@@ -1068,6 +1200,20 @@ export namespace QueryResolvers {
   > = Resolver<R, Parent, TContext, NetworkArgs>;
   export interface NetworkArgs {
     id: string;
+  }
+
+  export type NodesResolver<
+    R = Node[],
+    Parent = {},
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type NodeResolver<
+    R = Node,
+    Parent = {},
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext, NodeArgs>;
+  export interface NodeArgs {
+    id?: Maybe<string>;
   }
 
   export type SecretsResolver<
@@ -3943,6 +4089,334 @@ export namespace NetworkInspectResolvers {
   > = Resolver<R, Parent, TContext>;
 }
 
+export namespace NodeResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = Node> {
+    ID?: IdResolver<string, TypeParent, TContext>;
+
+    Version?: VersionResolver<Maybe<VersionType>, TypeParent, TContext>;
+
+    CreatedAt?: CreatedAtResolver<string, TypeParent, TContext>;
+
+    UpdatedAt?: UpdatedAtResolver<string, TypeParent, TContext>;
+
+    Spec?: SpecResolver<Maybe<NodeSpec>, TypeParent, TContext>;
+
+    Description?: DescriptionResolver<
+      Maybe<NodeDescription>,
+      TypeParent,
+      TContext
+    >;
+
+    Status?: StatusResolver<Maybe<NodeStatus>, TypeParent, TContext>;
+
+    Manager?: ManagerResolver<Maybe<NodeManagerStatus>, TypeParent, TContext>;
+  }
+
+  export type IdResolver<
+    R = string,
+    Parent = Node,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type VersionResolver<
+    R = Maybe<VersionType>,
+    Parent = Node,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CreatedAtResolver<
+    R = string,
+    Parent = Node,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type UpdatedAtResolver<
+    R = string,
+    Parent = Node,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type SpecResolver<
+    R = Maybe<NodeSpec>,
+    Parent = Node,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type DescriptionResolver<
+    R = Maybe<NodeDescription>,
+    Parent = Node,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type StatusResolver<
+    R = Maybe<NodeStatus>,
+    Parent = Node,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ManagerResolver<
+    R = Maybe<NodeManagerStatus>,
+    Parent = Node,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace NodeSpecResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = NodeSpec> {
+    Availability?: AvailabilityResolver<
+      Maybe<AvailabilityEnum>,
+      TypeParent,
+      TContext
+    >;
+
+    Name?: NameResolver<string, TypeParent, TContext>;
+
+    Role?: RoleResolver<Maybe<RoleEnum>, TypeParent, TContext>;
+
+    Labels?: LabelsResolver<Maybe<Json>, TypeParent, TContext>;
+  }
+
+  export type AvailabilityResolver<
+    R = Maybe<AvailabilityEnum>,
+    Parent = NodeSpec,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type NameResolver<
+    R = string,
+    Parent = NodeSpec,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type RoleResolver<
+    R = Maybe<RoleEnum>,
+    Parent = NodeSpec,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type LabelsResolver<
+    R = Maybe<Json>,
+    Parent = NodeSpec,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace NodeDescriptionResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = NodeDescription
+  > {
+    Hostname?: HostnameResolver<string, TypeParent, TContext>;
+
+    Platform?: PlatformResolver<Maybe<Platform>, TypeParent, TContext>;
+
+    Resources?: ResourcesResolver<Maybe<NodeResources>, TypeParent, TContext>;
+
+    GenericResources?: GenericResourcesResolver<
+      (Maybe<Json>)[],
+      TypeParent,
+      TContext
+    >;
+
+    Engine?: EngineResolver<Maybe<Engine>, TypeParent, TContext>;
+
+    TLSInfo?: TlsInfoResolver<Maybe<TlsInfo>, TypeParent, TContext>;
+  }
+
+  export type HostnameResolver<
+    R = string,
+    Parent = NodeDescription,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type PlatformResolver<
+    R = Maybe<Platform>,
+    Parent = NodeDescription,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ResourcesResolver<
+    R = Maybe<NodeResources>,
+    Parent = NodeDescription,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type GenericResourcesResolver<
+    R = (Maybe<Json>)[],
+    Parent = NodeDescription,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type EngineResolver<
+    R = Maybe<Engine>,
+    Parent = NodeDescription,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type TlsInfoResolver<
+    R = Maybe<TlsInfo>,
+    Parent = NodeDescription,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace PlatformResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = Platform> {
+    Architecture?: ArchitectureResolver<Maybe<string>, TypeParent, TContext>;
+
+    OS?: OsResolver<Maybe<OsEnum>, TypeParent, TContext>;
+  }
+
+  export type ArchitectureResolver<
+    R = Maybe<string>,
+    Parent = Platform,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type OsResolver<
+    R = Maybe<OsEnum>,
+    Parent = Platform,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace NodeResourcesResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = NodeResources> {
+    NanoCPUs?: NanoCpUsResolver<Maybe<number>, TypeParent, TContext>;
+
+    MemoryBytes?: MemoryBytesResolver<Maybe<number>, TypeParent, TContext>;
+  }
+
+  export type NanoCpUsResolver<
+    R = Maybe<number>,
+    Parent = NodeResources,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type MemoryBytesResolver<
+    R = Maybe<number>,
+    Parent = NodeResources,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace EngineResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = Engine> {
+    EngineVersion?: EngineVersionResolver<string, TypeParent, TContext>;
+
+    Labels?: LabelsResolver<Maybe<Json>, TypeParent, TContext>;
+
+    Plugins?: PluginsResolver<Plugin[], TypeParent, TContext>;
+  }
+
+  export type EngineVersionResolver<
+    R = string,
+    Parent = Engine,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type LabelsResolver<
+    R = Maybe<Json>,
+    Parent = Engine,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type PluginsResolver<
+    R = Plugin[],
+    Parent = Engine,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace PluginResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = Plugin> {
+    Type?: TypeResolver<Maybe<string>, TypeParent, TContext>;
+
+    Name?: NameResolver<Maybe<string>, TypeParent, TContext>;
+  }
+
+  export type TypeResolver<
+    R = Maybe<string>,
+    Parent = Plugin,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type NameResolver<
+    R = Maybe<string>,
+    Parent = Plugin,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace TlsInfoResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = TlsInfo> {
+    TrustRoot?: TrustRootResolver<string, TypeParent, TContext>;
+
+    CertIssuerSubject?: CertIssuerSubjectResolver<string, TypeParent, TContext>;
+
+    CertIssuerPublicKey?: CertIssuerPublicKeyResolver<
+      string,
+      TypeParent,
+      TContext
+    >;
+  }
+
+  export type TrustRootResolver<
+    R = string,
+    Parent = TlsInfo,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CertIssuerSubjectResolver<
+    R = string,
+    Parent = TlsInfo,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type CertIssuerPublicKeyResolver<
+    R = string,
+    Parent = TlsInfo,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace NodeStatusResolvers {
+  export interface Resolvers<TContext = MyContext, TypeParent = NodeStatus> {
+    State?: StateResolver<Maybe<StateEnum>, TypeParent, TContext>;
+
+    Message?: MessageResolver<Maybe<string>, TypeParent, TContext>;
+
+    Addr?: AddrResolver<Maybe<string>, TypeParent, TContext>;
+  }
+
+  export type StateResolver<
+    R = Maybe<StateEnum>,
+    Parent = NodeStatus,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type MessageResolver<
+    R = Maybe<string>,
+    Parent = NodeStatus,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type AddrResolver<
+    R = Maybe<string>,
+    Parent = NodeStatus,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
+export namespace NodeManagerStatusResolvers {
+  export interface Resolvers<
+    TContext = MyContext,
+    TypeParent = NodeManagerStatus
+  > {
+    Leader?: LeaderResolver<Maybe<boolean>, TypeParent, TContext>;
+
+    Reachability?: ReachabilityResolver<
+      Maybe<ReachabilityEnum>,
+      TypeParent,
+      TContext
+    >;
+
+    Addr?: AddrResolver<Maybe<string>, TypeParent, TContext>;
+  }
+
+  export type LeaderResolver<
+    R = Maybe<boolean>,
+    Parent = NodeManagerStatus,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type ReachabilityResolver<
+    R = Maybe<ReachabilityEnum>,
+    Parent = NodeManagerStatus,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+  export type AddrResolver<
+    R = Maybe<string>,
+    Parent = NodeManagerStatus,
+    TContext = MyContext
+  > = Resolver<R, Parent, TContext>;
+}
+
 export namespace TaskInspectResolvers {
   export interface Resolvers<TContext = MyContext, TypeParent = TaskInspect> {
     ID?: IdResolver<string, TypeParent, TContext>;
@@ -4287,6 +4761,16 @@ export type IResolvers<TContext = MyContext> = {
   IpamType?: IpamTypeResolvers.Resolvers<TContext>;
   IpamConfigType?: IpamConfigTypeResolvers.Resolvers<TContext>;
   NetworkInspect?: NetworkInspectResolvers.Resolvers<TContext>;
+  Node?: NodeResolvers.Resolvers<TContext>;
+  NodeSpec?: NodeSpecResolvers.Resolvers<TContext>;
+  NodeDescription?: NodeDescriptionResolvers.Resolvers<TContext>;
+  Platform?: PlatformResolvers.Resolvers<TContext>;
+  NodeResources?: NodeResourcesResolvers.Resolvers<TContext>;
+  Engine?: EngineResolvers.Resolvers<TContext>;
+  Plugin?: PluginResolvers.Resolvers<TContext>;
+  TlsInfo?: TlsInfoResolvers.Resolvers<TContext>;
+  NodeStatus?: NodeStatusResolvers.Resolvers<TContext>;
+  NodeManagerStatus?: NodeManagerStatusResolvers.Resolvers<TContext>;
   TaskInspect?: TaskInspectResolvers.Resolvers<TContext>;
   Volume?: VolumeResolvers.Resolvers<TContext>;
   VolumeOptions?: VolumeOptionsResolvers.Resolvers<TContext>;
