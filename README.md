@@ -28,6 +28,13 @@ All the constants in this project are defined in `src/constants.ts`.
 
 This project relies on [graphql-code-generator](https://github.com/dotansimha/graphql-code-generator) to generate types from the schema. To generate the types run `yarn generate` or `npm run generate`.
 
+# Run the project in a Docker container
+
+This project contains a Dockerfile that can build an image to quickly run the project without having to install any local dependencies. To do so run the following at the root of the project (you can change the names of the image as you want):
+
+- `docker build maximeheckel/docker-graphql .`
+- `docker run -it --name dockergraphql -v /var/run/docker.sock:/var/run/docker.sock -p 8080:4000 maximeheckel/docker-graphql`
+
 # Roadmap
 
 - [x] Add all Docker types in schema
