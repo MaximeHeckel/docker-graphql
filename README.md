@@ -28,7 +28,7 @@ All the constants in this project are defined in `src/constants.ts`.
 
 This project relies on [graphql-code-generator](https://github.com/dotansimha/graphql-code-generator) to generate types from the schema. To generate the types run `yarn generate` or `npm run generate`.
 
-# Run the project in a Docker container
+## Run the project in a Docker container
 
 This project contains a Dockerfile that can build an image to quickly run the project without having to install any local dependencies. To do so run the following at the root of the project (you can change the names of the image as you want):
 
@@ -43,7 +43,7 @@ This project contains a Dockerfile that can build an image to quickly run the pr
 - [ ] Fully type the server (IN PROGRESS)
 - [ ] Support for filters in query based on the API spec
 - [ ] Write tests (I still need to figure out what is the proper way / strategy to test this server)
-- [ ] Dockerize the project for easy setup
+- [x] Dockerize the project for easy setup
 
 Still under consideration:
 
