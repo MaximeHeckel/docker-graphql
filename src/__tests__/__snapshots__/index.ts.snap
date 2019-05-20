@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Integration tests Fetches the list of services 1`] = `
+Array [
+  Object {
+    "ID": "e95ea8fe-2acf-4194-b219-0899d8951e51",
+    "Spec": Object {
+      "Name": "Hello World",
+    },
+  },
+  Object {
+    "ID": "b682e41a-4f32-49ae-9acc-48f01a5c6e1e",
+    "Spec": Object {
+      "Name": "Hello World",
+    },
+  },
+]
+`;
