@@ -1,6 +1,6 @@
 import { Query } from './entrypoint';
 import scalars from './scalars';
 
-const global = [Query, scalars];
+const globals = [Query, scalars];
 
-export default global;
+export default globals;
