@@ -26,7 +26,7 @@
     "apollo-server": "^2.4.8",
     "chalk": "^2.4.2",
     "graphql": "^14.2.1",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.21",
     "superagent": "^5.0.2"
   }
 }
